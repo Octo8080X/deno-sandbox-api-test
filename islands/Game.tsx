@@ -30,6 +30,16 @@ moveDown();
     await sendCodeToApi();
   };
 
+  const handleShare = () => {
+    const text = encodeURIComponent("Deno Sandbox API Game! 🎮\n");
+    const url = encodeURIComponent("https://deno-sandbox-api-test.octo8080x.deno.net/");
+    const hashtags = encodeURIComponent("Deno,sandbox,BabylonJS");
+    globalThis.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${url}&hashtags=${hashtags}`,
+      "_blank",
+    );
+  };
+
   const sendCodeToApi = async () => {
     if (isLoading) return;
     setIsLoading(true);
@@ -83,16 +93,23 @@ moveDown();
           </div>
         </div>
 
-        <div class="flex justify-center">
+        <div class="flex justify-center gap-2">
           <button
             type="button"
             onClick={handleRetry}
             disabled={isLoading}
-            class="btn btn-primary btn-lg w-full shadow-lg hover:scale-105 transition-transform disabled:cursor-not-allowed"
+            class="btn btn-primary btn-lg flex-1 shadow-lg hover:scale-105 transition-transform disabled:cursor-not-allowed"
           >
             {isLoading
               ? <span class="loading loading-spinner"></span>
               : "Run Code"}
+          </button>
+          <button
+            type="button"
+            onClick={handleShare}
+            class="btn btn-neutral btn-lg shadow-lg hover:scale-105 transition-transform"
+          >
+            Share on 𝕏
           </button>
         </div>
 

@@ -7,6 +7,11 @@ export default define.page(function App({ Component }) {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Deno Sandbox API Test</title>
+        <meta property="og:title" content="Deno Sandbox API Test" />
+        <meta property="og:description" content="A sandbox game powered by Deno and Babylon.js" />
+        <meta property="og:image" content="/ogp.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="/ogp.png" />
         <script src="https://cdn.babylonjs.com/babylon.js"></script>
         <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
       </head>
