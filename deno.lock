@@ -30,8 +30,6 @@
     "jsr:@std/uuid@^1.0.9": "1.0.9",
     "npm:@babel/core@^7.28.0": "7.28.5",
     "npm:@babel/preset-react@^7.27.1": "7.28.5_@babel+core@7.28.5",
-    "npm:@babylonjs/core@^8.39.0": "8.39.0",
-    "npm:@babylonjs/gui@^8.39.0": "8.39.0_@babylonjs+core@8.39.0",
     "npm:@mjackson/node-fetch-server@0.7": "0.7.0",
     "npm:@opentelemetry/api@^1.9.0": "1.9.0",
     "npm:@preact/signals@^2.2.1": "2.5.1_preact@10.27.2",
@@ -365,15 +363,6 @@
       "dependencies": [
         "@babel/helper-string-parser",
         "@babel/helper-validator-identifier"
-      ]
-    },
-    "@babylonjs/core@8.39.0": {
-      "integrity": "sha512-ohOpd3Cb+q59bgFdMaumxSgFSb9h4FeiY8vNFIkHwOCWGxvh8zbDnQEU5UJ5w7LgjIhbsm2IxVB2oKZ9/4Pb5w=="
-    },
-    "@babylonjs/gui@8.39.0_@babylonjs+core@8.39.0": {
-      "integrity": "sha512-FzeFVXhZLSry0Iw7k2ySDgYxu8CnsvdCKLPYoHu7K9j6D/EyASuKSGh2G9lvw/im83bMk5/bIYRJiFnBSh5vUg==",
-      "dependencies": [
-        "@babylonjs/core"
       ]
     },
     "@esbuild/aix-ppc64@0.25.7": {
@@ -1140,8 +1129,6 @@
       "jsr:@deno/sandbox@~0.2.1",
       "jsr:@fresh/core@^2.2.0",
       "jsr:@fresh/plugin-vite@^1.0.8",
-      "npm:@babylonjs/core@^8.39.0",
-      "npm:@babylonjs/gui@^8.39.0",
       "npm:@preact/signals@^2.5.0",
       "npm:@tailwindcss/vite@^4.1.12",
       "npm:daisyui@^5.5.5",

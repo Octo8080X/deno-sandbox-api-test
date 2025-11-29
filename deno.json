@@ -20,8 +20,6 @@
   ],
   "imports": {
     "@/": "./",
-    "@babylonjs/core": "npm:@babylonjs/core@^8.39.0",
-    "@babylonjs/gui": "npm:@babylonjs/gui@^8.39.0",
     "@deno/sandbox": "jsr:@deno/sandbox@^0.2.1",
     "daisyui": "npm:daisyui@^5.5.5",
     "fresh": "jsr:@fresh/core@^2.2.0",

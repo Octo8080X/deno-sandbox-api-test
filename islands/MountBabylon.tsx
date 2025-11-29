@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "preact/hooks";
 import { MoveOperation } from "./Game.tsx";
-import * as BABYLON from "@babylonjs/core/Legacy/legacy";
-import * as GUI from "@babylonjs/gui";
+
+// deno-lint-ignore no-explicit-any
+declare const BABYLON: any;
 
 interface MountBabylonProps {
   movePlan: MoveOperation[];
@@ -140,14 +141,14 @@ export default function MountBabylon(props: MountBabylonProps) {
       player.material = playerMaterial;
 
       // エネルギー表示
-      const energyText = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-      const energyLabel = new GUI.TextBlock();
+      const energyText = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+      const energyLabel = new BABYLON.GUI.TextBlock();
       energyLabel.text = `Energy: ${energy}`;
       energyLabel.color = "white";
       energyLabel.fontSize = 24;
       energyLabel.textHorizontalAlignment =
-        GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-      energyLabel.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+      energyLabel.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
       energyLabel.left = 10;
       energyLabel.top = 10;
       energyText.addControl(energyLabel);
