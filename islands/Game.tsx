@@ -81,7 +81,15 @@ moveDown();
   };
 
   return (
-    <div class="flex flex-col xl:flex-row gap-6 w-full max-w-7xl mx-auto">
+    <div class="flex flex-col gap-6 w-full max-w-7xl mx-auto">
+      <button
+        type="button"
+        onClick={handleShare}
+        class="fixed top-4 right-4 btn btn-neutral shadow-lg hover:scale-105 transition-transform z-50"
+      >
+        Share on 𝕏
+      </button>
+
       {/* Left Column: Game View */}
       <div class="flex-1 flex flex-col gap-4">
         <div class="card bg-base-100 shadow-xl border border-base-200">
@@ -93,23 +101,16 @@ moveDown();
           </div>
         </div>
 
-        <div class="flex justify-center gap-2">
+        <div class="flex justify-center">
           <button
             type="button"
             onClick={handleRetry}
             disabled={isLoading}
-            class="btn btn-primary btn-lg flex-1 shadow-lg hover:scale-105 transition-transform disabled:cursor-not-allowed"
+            class="btn btn-primary btn-lg w-full shadow-lg hover:scale-105 transition-transform disabled:cursor-not-allowed"
           >
             {isLoading
               ? <span class="loading loading-spinner"></span>
               : "Run Code"}
-          </button>
-          <button
-            type="button"
-            onClick={handleShare}
-            class="btn btn-neutral btn-lg shadow-lg hover:scale-105 transition-transform"
-          >
-            Share on 𝕏
           </button>
         </div>
 
