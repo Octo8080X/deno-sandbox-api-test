@@ -13,7 +13,7 @@ export default define.page(function Home(_ctx) {
         <div class="hero-content text-center">
           <div class="max-w-md">
             <h1 class="text-3xl font-bold text-primary">
-              Deno Sandbox API Test
+              Deno Sandbox API Test Game
             </h1>
             <p class="py-2">
               Fresh x Babylon.js x Monaco Editor on Deno Sandbox API
