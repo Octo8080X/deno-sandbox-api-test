@@ -12,8 +12,12 @@ export default define.page(function Home(_ctx) {
       <div class="hero bg-base-100 py-2 mb-4 shadow-sm">
         <div class="hero-content text-center">
           <div class="max-w-md">
-            <h1 class="text-3xl font-bold text-primary">Deno Sandbox API Test</h1>
-            <p class="py-2">Fresh x Babylon.js x Monaco Editor on Deno Sandbox API</p>
+            <h1 class="text-3xl font-bold text-primary">
+              Deno Sandbox API Test
+            </h1>
+            <p class="py-2">
+              Fresh x Babylon.js x Monaco Editor on Deno Sandbox API
+            </p>
           </div>
         </div>
       </div>

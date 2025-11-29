@@ -47,9 +47,9 @@ moveDown();
         const data = await response.json();
 
         if (data.status === "error") {
-          if(data.stderr == null || data.stderr === ""){
+          if (data.stderr == null || data.stderr === "") {
             setError("Unknown error occurred in sandbox");
-          }else{
+          } else {
             // ANSIエスケープシーケンスを除去して表示
             // deno-lint-ignore no-control-regex
             setError(data.stderr.replace(/\x1b\[[0-9;]*m/g, ""));
@@ -90,7 +90,9 @@ moveDown();
             disabled={isLoading}
             class="btn btn-primary btn-lg w-full shadow-lg hover:scale-105 transition-transform disabled:cursor-not-allowed"
           >
-            {isLoading ? <span class="loading loading-spinner"></span> : "Run Code"}
+            {isLoading
+              ? <span class="loading loading-spinner"></span>
+              : "Run Code"}
           </button>
         </div>
 

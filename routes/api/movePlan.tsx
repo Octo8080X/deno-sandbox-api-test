@@ -52,7 +52,7 @@ async function simulateSandbox(userScript: string) {
   for await (const chunk of child.stdout) {
     stdoutTexts.push(new TextDecoder().decode(chunk));
   }
-　const stderrTexts = [];
+  const stderrTexts = [];
   if (child.stderr) {
     for await (const chunk of child.stderr) {
       stderrTexts.push(new TextDecoder().decode(chunk));
@@ -66,8 +66,7 @@ async function simulateSandbox(userScript: string) {
     stdout: stdoutTexts.join(""),
     stderr: stderrTexts.join(""),
     status: (await child.status).code == 0 ? "success" : "error",
-  }
-
+  };
 }
 export const handler = define.handlers({
   async POST(ctx) {
