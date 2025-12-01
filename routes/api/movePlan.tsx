@@ -1,6 +1,8 @@
 import { define } from "../../utils.ts";
 import { Sandbox } from "@deno/sandbox";
 
+const OUTPUT_SPLITTER = "===MOVE_PLAN_START==="as const;
+
 function createSrcCode(userScript: string) {
   return `
   const  movePlan: string[] = [];
@@ -21,6 +23,7 @@ function createSrcCode(userScript: string) {
   ${userScript}
   // User Script End
 
+  console.log("${OUTPUT_SPLITTER}");
   console.log(JSON.stringify({movePlan}));
   `;
 }
@@ -62,8 +65,11 @@ async function simulateSandbox(userScript: string) {
     console.error("Sandbox stderr:", stderrTexts.join(""));
   }
 
+  const [stdout, movePlan] = stdoutTexts.join("").split(OUTPUT_SPLITTER)
+
   return {
-    stdout: stdoutTexts.join(""),
+    movePlan,
+    stdout ,
     stderr: stderrTexts.join(""),
     status: (await child.status).code == 0 ? "success" : "error",
   };

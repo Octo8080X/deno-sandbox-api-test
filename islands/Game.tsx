@@ -20,6 +20,7 @@ moveDown();
   ]);
   const [resetKey, setResetKey] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [output, setOutput] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -56,6 +57,8 @@ moveDown();
       if (response.ok) {
         const data = await response.json();
 
+        console.log("API Response:", data);
+
         if (data.status === "error") {
           if (data.stderr == null || data.stderr === "") {
             setError("Unknown error occurred in sandbox");
@@ -65,7 +68,9 @@ moveDown();
             setError(data.stderr.replace(/\x1b\[[0-9;]*m/g, ""));
           }
         } else {
-          setMovePlan(JSON.parse(data.stdout).movePlan);
+          console.log("Move Plan:", data.movePlan);
+          setOutput(data.stdout);
+          setMovePlan(JSON.parse(data.movePlan).movePlan);
           setResetKey((prev) => prev + 1);
         }
       } else {
@@ -133,6 +138,29 @@ moveDown();
               : "Run Code"}
           </button>
         </div>
+
+        {output && (
+          <div role="alert" class="alert alert-success shadow-lg">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="stroke-current shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <div>
+              <h3 class="font-bold">Output</h3>
+              <div class="text-xs whitespace-pre-wrap font-mono">{output}</div>
+            </div>
+          </div>
+        )}
+
 
         {error && (
           <div role="alert" class="alert alert-error shadow-lg">
