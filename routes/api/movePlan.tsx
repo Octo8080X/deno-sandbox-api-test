@@ -2,7 +2,7 @@ import { define } from "../../utils.ts";
 import { Sandbox } from "@deno/sandbox";
 
 const OUTPUT_SPLITTER = "===MOVE_PLAN_START===" as const;
-type GameMap = "map1"|"map2"|"map3";
+type GameMap = "map1" | "map2" | "map3";
 
 function createSrcCode(userScript: string, gameMap: GameMap): string {
   return `
@@ -20,7 +20,7 @@ function createSrcCode(userScript: string, gameMap: GameMap): string {
 }
 
 async function simulateSandbox(userScript: string, gameMap: GameMap) {
-  await using sandbox = await Sandbox.create();
+  const sandbox = await Sandbox.create();
 
   const libScriptName = "gameObject.ts";
   const libScriptCode = await Deno.readTextFile(
@@ -81,7 +81,10 @@ export const handler = define.handlers({
     const userScript = await ctx.req.json();
 
     console.log(userScript);
-    const simulateResult = await simulateSandbox(userScript.code, userScript.gameMap);
+    const simulateResult = await simulateSandbox(
+      userScript.code,
+      userScript.gameMap,
+    );
 
     console.log("Simulation result:", simulateResult);
 

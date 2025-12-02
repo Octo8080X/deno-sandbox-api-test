@@ -231,9 +231,9 @@ export function gameViewer(
     createGround(scene);
 
     // UIの作成
-    //const { updateStatusMessage } = createStatusMessageUI();
-    //const { updateFail, updateSuccess } = createGameStateMessageUI();
-    //const { updateReplay } = createReplayMessageUI();
+    const { updateStatusMessage } = createStatusMessageUI();
+    const { updateFail, updateSuccess } = createGameStateMessageUI();
+    const { updateReplay } = createReplayMessageUI();
 
     console.log(props.simulateResult);
 
@@ -253,20 +253,41 @@ export function gameViewer(
       const movePlan = props.simulateResult.movePlan;
       if (!movePlan || movePlan.length === 0) return;
       if (countSkip) return;
-
-      //updateStatusMessage(`Enegy ${props.simulateResult.energyHistory[count]}`);
-      if (props.simulateResult.energyHistory[count] <= 0) {
-        //updateFail();
-        //updateReplay();
+      if (props.simulateResult.movePlan.length <= count) {
+        updateFail();
+        updateReplay();
         countSkip = true;
+        count = 0;
         setTimeout(() => {
-          count = 0;
           countSkip = false;
         }, 1000);
         return;
       }
 
-      console.log("Executing move plan:", count);
+      if (props.simulateResult.energyHistory[count] <= 0) {
+        updateStatusMessage(
+          `Energy ${props.simulateResult.energyHistory[count]}`,
+        );
+        updateFail();
+        updateReplay();
+        countSkip = true;
+        count = 0;
+        setTimeout(() => {
+          countSkip = false;
+        }, 1000);
+        return;
+      }
+
+      if (props.simulateResult.energyHistory.length <= count) {
+        count = 0;
+        updateFail();
+        updateReplay();
+        return;
+      }
+      updateStatusMessage(
+        `Energy ${props.simulateResult.energyHistory[count]}`,
+      );
+
       if (count < movePlan.length) {
         for (const move of movePlan[count]) {
           if (move.action === "move") {
@@ -348,7 +369,7 @@ export function gameViewer(
           }
           if (move.action === "success") {
             countSkip = true;
-            //updateSuccess();
+            updateSuccess();
 
             const bounceAnim = BABYLON.Animation.CreateAndStartAnimation(
               "goalBounce",
@@ -378,7 +399,7 @@ export function gameViewer(
                   count = 0;
                   countSkip = false;
                 }
-                //updateReplay();
+                updateReplay();
               },
             );
           }
@@ -386,8 +407,8 @@ export function gameViewer(
         count++;
       } else {
         count = 0;
-        //updateFail();
-        //updateReplay();
+        updateFail();
+        updateReplay();
       }
     }, 1000);
 

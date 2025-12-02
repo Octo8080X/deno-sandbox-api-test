@@ -68,12 +68,12 @@ function createTick(objects: GameObject[]) {
     // 積極的なstay もしくは、後手番及び評価の操作
     // ゴールの座標なので成功
     for (const obj of objects.filter((obj) => obj.type === "goal")) {
-      console.log(
-        "Goal position:",
-        obj.position,
-        "Player target position:",
-        tmpPos,
-      );
+      //console.log(
+      //  "Goal position:",
+      //  obj.position,
+      //  "Player target position:",
+      //  tmpPos,
+      //);
       if (obj.position.x === tmpPos.x && obj.position.z === tmpPos.z) {
         // ゴールに到達
         console.log("Goal reached at position:", tmpPos);

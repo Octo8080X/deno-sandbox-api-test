@@ -3,21 +3,23 @@ import MonacoEditor from "./MonacoEditor.tsx";
 import MountBabylon from "./MountBabylon.tsx";
 import { useEffect, useState } from "preact/hooks";
 import { SimulateResult } from "../game/gameObject.ts";
-const gameResorrces ={
-  map1: await import("../game/map1.ts"),
-  map2: await import("../game/map2.ts"),
-}
+import * as map1 from "../game/map1.ts";
+import * as map2 from "../game/map2.ts";
 
+const gameResorces = {
+  map1,
+  map2,
+};
 
-type GameMap = "map1"|"map2";
+type GameMap = "map1" | "map2";
 
 export default function Game() {
   const [gameMap, setGameMap] = useState<GameMap>("map1");
-  const code = useSignal(gameResorrces[gameMap].defaultCommands);
+  const code = useSignal(gameResorces[gameMap].defaultCommands.join("\n"));
   const [simulateResult, setSimulateResult] = useState<
     SimulateResult
   >(
-    gameResorrces[gameMap].defaultSimulateResult
+    gameResorces[gameMap].defaultSimulateResult,
   );
 
   const [resetKey, setResetKey] = useState(0);
@@ -26,12 +28,11 @@ export default function Game() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    code.value = gameResorrces[gameMap].defaultCommands;
-    setSimulateResult(gameResorrces[gameMap].defaultSimulateResult);
+    console.log("Game map changed:", gameMap);
+    code.value = gameResorces[gameMap].defaultCommands.join("\n");
+    setSimulateResult(gameResorces[gameMap].defaultSimulateResult);
     setResetKey((prev) => prev + 1);
   }, [gameMap]);
-
-
 
   const handleRetry = async () => {
     await sendCodeToApi();
@@ -53,14 +54,14 @@ export default function Game() {
     if (isLoading) return;
     setIsLoading(true);
     setError(null);
-    console.log("Sending code to API:", { code: code.value, gameMap});
+    console.log("Sending code to API:", { code: code.value, gameMap });
     try {
       const response = await fetch("/api/movePlan", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code: code.value, gameMap}),
+        body: JSON.stringify({ code: code.value, gameMap }),
       });
 
       if (response.ok) {

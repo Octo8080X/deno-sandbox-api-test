@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "preact/hooks";
-import { Signal } from "@preact/signals";
+import { effect, Signal } from "@preact/signals";
 
 interface MonacoEditorProps {
   code: Signal<string>;
@@ -8,6 +8,20 @@ interface MonacoEditorProps {
 export default function MonacoEditor({ code }: MonacoEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const monacoRef = useRef<unknown>(null);
+
+  useEffect(() => {
+    const dispose = effect(() => {
+      if (monacoRef.current) {
+        // @ts-ignore - Monaco editor instance
+        const currentValue = monacoRef.current.getValue();
+        if (currentValue !== code.value) {
+          // @ts-ignore - Monaco editor instance
+          monacoRef.current.setValue(code.value);
+        }
+      }
+    });
+    return dispose;
+  }, [code.value]);
 
   useEffect(() => {
     if (typeof globalThis.window === "undefined" || !editorRef.current) return;

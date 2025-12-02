@@ -10,10 +10,10 @@ import {
 export function map2() {
   const objects: GameObject[] = [];
   objects.push(createGoal(7, 7));
-  objects.push(createPlayer(2, 2));
+  objects.push(createPlayer(3, 3));
   return {
     gameObjects: objects,
-    defaultEnergy: 5,
+    defaultEnergy: 9,
   };
 }
 
@@ -78,15 +78,15 @@ export function createTick(objects: GameObject[]) {
 
     // ゴールの座標なので成功
     for (const obj of objects.filter((obj) => obj.type === "goal")) {
-      console.log(
-        "Goal position:",
-        obj.position,
-        "Player target position:",
-        tmpPos,
-      );
+      // console.log(
+      //   "Goal position:",
+      //   obj.position,
+      //   "Player target position:",
+      //   tmpPos,
+      // );
       if (obj.position.x === tmpPos.x && obj.position.z === tmpPos.z) {
         // ゴールに到達
-        console.log("Goal reached at position:", tmpPos);
+        //console.log("Goal reached at position:", tmpPos);
         player.position = tmpPos;
         return [{
           id: player.id,
@@ -115,7 +115,7 @@ const movePlan: MovePlan[][] = [];
 const energyHistory: number[] = [];
 
 function createStart() {
-  console.log("Game started");
+  //console.log("Game started");
   movePlan.push([{
     id: gameObjects.find((obj) => obj.type === "player")!.id,
     type: "player",
@@ -164,7 +164,6 @@ export function moveDown() {
 }
 
 export function stay() {
-  energyHistory.push(energyHistory[energyHistory.length - 1] - 1);
   tick("stay");
   energyHistory.push(energyHistory[energyHistory.length - 1]);
 }
@@ -179,9 +178,10 @@ export function getSimulateResult(): SimulateResult {
   };
 }
 
-
 export const defaultCommands = [
   "// Welcome to Game",
+  "moveRight();",
+  "moveUp();",
   "moveRight();",
   "moveUp();",
   "moveLeft();",
@@ -189,45 +189,66 @@ export const defaultCommands = [
 ];
 
 export const defaultSimulateResult = {
-      objects: [{
-        id: "goal-a2b778e2-c2e5-44ea-aa08-00cb0b3dd083",
-        type: "goal",
-        position: { x: 7, z: 7 },
-      }, {
+  objects: [{
+    id: "goal-a2b778e2-c2e5-44ea-aa08-00cb0b3dd083",
+    type: "goal",
+    position: { x: 7, z: 7 },
+  }, {
+    id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
+    type: "player",
+    position: { x: 3, z: 3 },
+  }],
+  movePlan: [
+    [
+      {
+        action: "start",
         id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
+        move: { x: 3, z: 3 },
         type: "player",
-        position: { x: 2, z: 2 },
-      }],
-      movePlan: [
-        [{
-          id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-          type: "player",
-          move: { x: 4, z: 3 },
-          action: "move",
-        }],
-        [],
-        [{
-          id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-          type: "player",
-          move: { x: 4, z: 4 },
-          action: "move",
-        }],
-        [],
-        [{
-          id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-          type: "player",
-          move: { x: 3, z: 4 },
-          action: "move",
-        }],
-        [],
-        [{
-          id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-          type: "player",
-          move: { x: 3, z: 3 },
-          action: "move",
-        }],
-        [],
-      ],
-      energyHistory: [5, 4, 4, 3, 3, 2, 2, 1, 1],
-    }
-  
+      },
+    ],
+    [{
+      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
+      type: "player",
+      move: { x: 4, z: 3 },
+      action: "move",
+    }],
+    [],
+    [{
+      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
+      type: "player",
+      move: { x: 4, z: 4 },
+      action: "move",
+    }],
+    [],
+    [{
+      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
+      type: "player",
+      move: { x: 5, z: 4 },
+      action: "move",
+    }],
+    [],
+    [{
+      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
+      type: "player",
+      move: { x: 5, z: 5 },
+      action: "move",
+    }],
+    [],
+    [{
+      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
+      type: "player",
+      move: { x: 4, z: 5 },
+      action: "move",
+    }],
+    [],
+    [{
+      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
+      type: "player",
+      move: { x: 4, z: 4 },
+      action: "move",
+    }],
+    [],
+  ],
+  energyHistory: [10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1],
+};
