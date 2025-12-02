@@ -2,30 +2,36 @@ import { useSignal } from "@preact/signals";
 import MonacoEditor from "./MonacoEditor.tsx";
 import MountBabylon from "./MountBabylon.tsx";
 import { useEffect, useState } from "preact/hooks";
+import { SimulateResult } from "../game/gameObject.ts";
+const gameResorrces ={
+  map1: await import("../game/map1.ts"),
+  map2: await import("../game/map2.ts"),
+}
 
-export type MoveOperation = "right" | "left" | "up" | "down";
+
+type GameMap = "map1"|"map2";
 
 export default function Game() {
-  const code = useSignal(`// Welcome to Game
-moveRight();
-moveUp();
-moveLeft();    
-moveDown();
-`);
-  const [movePlan, setMovePlan] = useState<MoveOperation[]>([
-    "right",
-    "up",
-    "left",
-    "down",
-  ]);
+  const [gameMap, setGameMap] = useState<GameMap>("map1");
+  const code = useSignal(gameResorrces[gameMap].defaultCommands);
+  const [simulateResult, setSimulateResult] = useState<
+    SimulateResult
+  >(
+    gameResorrces[gameMap].defaultSimulateResult
+  );
+
   const [resetKey, setResetKey] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [output, setOutput] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("Current code:", code.value);
-  }, [code.value]);
+    code.value = gameResorrces[gameMap].defaultCommands;
+    setSimulateResult(gameResorrces[gameMap].defaultSimulateResult);
+    setResetKey((prev) => prev + 1);
+  }, [gameMap]);
+
+
 
   const handleRetry = async () => {
     await sendCodeToApi();
@@ -33,7 +39,9 @@ moveDown();
 
   const handleShare = () => {
     const text = encodeURIComponent("Deno Sandbox API Game! 🎮\n");
-    const url = encodeURIComponent("https://deno-sandbox-api-test.octo8080x.deno.net/");
+    const url = encodeURIComponent(
+      "https://deno-sandbox-api-test.octo8080x.deno.net/",
+    );
     const hashtags = encodeURIComponent("Deno,sandbox,BabylonJS");
     globalThis.open(
       `https://twitter.com/intent/tweet?text=${text}&url=${url}&hashtags=${hashtags}`,
@@ -45,13 +53,14 @@ moveDown();
     if (isLoading) return;
     setIsLoading(true);
     setError(null);
+    console.log("Sending code to API:", { code: code.value, gameMap});
     try {
       const response = await fetch("/api/movePlan", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code: code.value }),
+        body: JSON.stringify({ code: code.value, gameMap}),
       });
 
       if (response.ok) {
@@ -68,9 +77,9 @@ moveDown();
             setError(data.stderr.replace(/\x1b\[[0-9;]*m/g, ""));
           }
         } else {
-          console.log("Move Plan:", data.movePlan);
+          console.log("Simulate Result:", data.simulateResult);
           setOutput(data.stdout);
-          setMovePlan(JSON.parse(data.movePlan).movePlan);
+          setSimulateResult(data.simulateResult);
           setResetKey((prev) => prev + 1);
         }
       } else {
@@ -115,6 +124,21 @@ moveDown();
         </button>
       </div>
 
+      <div>
+        {/* Game Map Selector */}
+        <label class="label">
+          <span class="label-text">Select Game Map:</span>
+        </label>
+        <select
+          class="select select-bordered w-full max-w-xs"
+          value={gameMap}
+          onChange={(e) => setGameMap(e.currentTarget.value as GameMap)}
+        >
+          <option value="map1">Map 1</option>
+          <option value="map2">Map 2</option>
+        </select>
+      </div>
+
       {/* Left Column: Game View */}
       <div class="flex-1 flex flex-col gap-4">
         <div class="card bg-base-100 shadow-xl border border-base-200">
@@ -122,7 +146,7 @@ moveDown();
             <div class="flex justify-between items-center mb-2">
               <h2 class="card-title text-lg">Game View</h2>
             </div>
-            <MountBabylon key={resetKey} movePlan={movePlan} />
+            <MountBabylon key={resetKey} simulateResult={simulateResult} />
           </div>
         </div>
 
@@ -160,7 +184,6 @@ moveDown();
             </div>
           </div>
         )}
-
 
         {error && (
           <div role="alert" class="alert alert-error shadow-lg">
