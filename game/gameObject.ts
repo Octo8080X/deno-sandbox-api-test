@@ -1,17 +1,33 @@
 export type Operation = "right" | "left" | "up" | "down" | "stay";
 
-export interface GameObject {
+export interface BaseGameObject {
   id: string;
-  type: "player" | "goal";
+  type: "player" | "goal" | "piston";
   position: { x: number; z: number };
 }
 
+type PlayerGameObject = BaseGameObject & {
+  type: "player";
+};
+
+type GoalGameObject = BaseGameObject & {
+  type: "goal";
+};
+
+type PistonGameObject = BaseGameObject & {
+  type: "piston";
+  direction: "right" | "left" | "up" | "down";
+  eventNumber: number;
+};
+
+export type GameObject = PlayerGameObject | GoalGameObject | PistonGameObject;
+
 export interface MovePlanBase {
   id: string;
-  type: "player";
 }
 
 export interface MovePlanPlayer extends MovePlanBase {
+  type: "player";
   move: { x: number; z: number };
   action:
     | "start"
@@ -23,7 +39,13 @@ export interface MovePlanPlayer extends MovePlanBase {
     | "success";
 }
 
-export type MovePlan = MovePlanPlayer;
+export interface MovePlanPiston extends MovePlanBase {
+  type: "piston";
+  direction: "right" | "left" | "up" | "down";
+  action: "activate" | "deactivate";
+}
+
+export type MovePlan = MovePlanPlayer | MovePlanPiston;
 
 export interface SimulateResult {
   objects: GameObject[];
@@ -50,5 +72,19 @@ export function createPlayer(x: number, z: number): GameObject {
     id: `player-${crypto.randomUUID()}`,
     type: "player",
     position: { x, z },
+  };
+}
+
+export function createPiston(
+  x: number,
+  z: number,
+  direction: PistonGameObject["direction"],
+): GameObject {
+  return {
+    id: `piston-${crypto.randomUUID()}`,
+    type: "piston",
+    position: { x, z },
+    direction,
+    eventNumber: Math.floor(Math.random() * 5),
   };
 }

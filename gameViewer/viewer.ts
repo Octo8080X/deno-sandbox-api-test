@@ -125,6 +125,44 @@ function createPlayer(scene: any, x: number, z: number) {
   return player;
 }
 
+function createPiston(scene: any, x: number, z: number) {
+  // ピストンの土台
+  const piston = BABYLON.MeshBuilder.CreateBox(
+    "piston",
+    { height: 0.5, width: 1, depth: 1 },
+    scene,
+  );
+  piston.position = new BABYLON.Vector3(-3.5 + x, -1.75, -3.5 + z);
+
+  const pistonMaterial = new BABYLON.StandardMaterial(
+    "pistonMaterial",
+    scene,
+  );
+  pistonMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.3, 0.3);
+  piston.material = pistonMaterial;
+
+  // ピストンの可動部分
+  const pistonHead = BABYLON.MeshBuilder.CreateBox(
+    "pistonHead",
+    { height: 0.6, width: 0.8, depth: 0.8 },
+    scene,
+  );
+  pistonHead.position = new BABYLON.Vector3(
+    -3.5 + x,
+    -1.75,
+    -3.5 + z,
+  );
+
+  const pistonHeadMaterial = new BABYLON.StandardMaterial(
+    "pistonHeadMaterial",
+    scene,
+  );
+  pistonHeadMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+  pistonHead.material = pistonHeadMaterial;
+
+  return pistonHead;
+}
+
 function createGameStateMessageUI() {
   const text = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
     "GameStateMessageUI",
@@ -236,11 +274,17 @@ export function gameViewer(
     const { updateReplay } = createReplayMessageUI();
 
     console.log(props.simulateResult);
+    const objects: { [key: string]: any } = {};
 
     for (const obj of props.simulateResult.objects) {
       if (obj.type === "goal") {
         // ゴール地点に旗を設置
         createGoalFlag(scene, obj.position.x, obj.position.z);
+      }
+      if (obj.type === "piston") {
+        // ピストンを設置
+        const piston = createPiston(scene, obj.position.x, obj.position.z);
+        objects[obj.id] = piston;
       }
     }
 
@@ -290,118 +334,153 @@ export function gameViewer(
 
       if (count < movePlan.length) {
         for (const move of movePlan[count]) {
-          if (move.action === "move") {
-            const worldX = -3.5 + move.move.x;
-            const worldZ = -3.5 + move.move.z;
+          console.log(move);
+          if (move.type === "piston") {
+            // ピストンのアニメーション
+
+            const piston = objects[move.id];
+            // objects 配列からピストンオブジェクトを取得
+            const pistonBaseProp = props.simulateResult.objects.find(
+              (o) => o.id === move.id,
+            );
+
+            const basePosition = pistonBaseProp!.position;
+            const newPistonheadPos = piston.position.clone();
+            let actionProp = "";
+            if (move.direction === "down" && move.action === "activate") {
+              actionProp = "position.z";
+              newPistonheadPos.z = basePosition?.z - 1 - 3.5;
+            }
+            if (move.direction === "down" && move.action === "deactivate") {
+              actionProp = "position.z";
+              newPistonheadPos.z = basePosition?.z - 3.5;
+            }
+
             BABYLON.Animation.CreateAndStartAnimation(
-              "playerMove",
-              player,
-              "position",
+              "pistonMove",
+              piston,
+              actionProp,
               60,
               30,
-              player.position,
-              new BABYLON.Vector3(worldX, -1.75, worldZ),
+              piston.position.z,
+              newPistonheadPos.z,
               BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
-              undefined,
             );
           }
+          if (move.type === "player") {
+            if (move.action === "move") {
+              const worldX = -3.5 + move.move.x;
+              const worldZ = -3.5 + move.move.z;
+              BABYLON.Animation.CreateAndStartAnimation(
+                "playerMove",
+                player,
+                "position",
+                60,
+                30,
+                player.position,
+                new BABYLON.Vector3(worldX, -1.75, worldZ),
+                BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+                undefined,
+              );
+            }
 
-          if (move.action.startsWith("failure-")) {
-            let anim = null;
-            if (move.action === "failure-right") {
-              anim = BABYLON.Animation.CreateAndStartAnimation(
-                "playerShakeX",
-                player,
-                "position.x",
-                60,
-                30,
-                player.position.x,
-                player.position.x + 0.5,
-                BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
-              );
+            if (move.action.startsWith("failure-")) {
+              let anim = null;
+              if (move.action === "failure-right") {
+                anim = BABYLON.Animation.CreateAndStartAnimation(
+                  "playerShakeX",
+                  player,
+                  "position.x",
+                  60,
+                  30,
+                  player.position.x,
+                  player.position.x + 0.5,
+                  BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
+                );
+              }
+              if (move.action === "failure-left") {
+                anim = BABYLON.Animation.CreateAndStartAnimation(
+                  "playerShakeX",
+                  player,
+                  "position.x",
+                  60,
+                  30,
+                  player.position.x,
+                  player.position.x - 0.5,
+                  BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
+                );
+              }
+              if (move.action === "failure-up") {
+                anim = BABYLON.Animation.CreateAndStartAnimation(
+                  "playerShakeZ",
+                  player,
+                  "position.z",
+                  60,
+                  30,
+                  player.position.z,
+                  player.position.z + 0.5,
+                  BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
+                );
+              }
+              if (move.action === "failure-down") {
+                anim = BABYLON.Animation.CreateAndStartAnimation(
+                  "playerShakeZ",
+                  player,
+                  "position.z",
+                  60,
+                  30,
+                  player.position.z,
+                  player.position.z - 0.5,
+                  BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
+                );
+              }
+              setTimeout(() => {
+                anim.stop();
+                player.position.x = -3.5 + move.move.x;
+                player.position.z = -3.5 + move.move.z;
+              }, 800);
             }
-            if (move.action === "failure-left") {
-              anim = BABYLON.Animation.CreateAndStartAnimation(
-                "playerShakeX",
-                player,
-                "position.x",
-                60,
-                30,
-                player.position.x,
-                player.position.x - 0.5,
-                BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
-              );
-            }
-            if (move.action === "failure-up") {
-              anim = BABYLON.Animation.CreateAndStartAnimation(
-                "playerShakeZ",
-                player,
-                "position.z",
-                60,
-                30,
-                player.position.z,
-                player.position.z + 0.5,
-                BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
-              );
-            }
-            if (move.action === "failure-down") {
-              anim = BABYLON.Animation.CreateAndStartAnimation(
-                "playerShakeZ",
-                player,
-                "position.z",
-                60,
-                30,
-                player.position.z,
-                player.position.z - 0.5,
-                BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
-              );
-            }
-            setTimeout(() => {
-              anim.stop();
+
+            if (move.action === "start") {
               player.position.x = -3.5 + move.move.x;
               player.position.z = -3.5 + move.move.z;
-            }, 800);
-          }
+            }
+            if (move.action === "success") {
+              countSkip = true;
+              updateSuccess();
 
-          if (move.action === "start") {
-            player.position.x = -3.5 + move.move.x;
-            player.position.z = -3.5 + move.move.z;
-          }
-          if (move.action === "success") {
-            countSkip = true;
-            updateSuccess();
+              const bounceAnim = BABYLON.Animation.CreateAndStartAnimation(
+                "goalBounce",
+                player,
+                "position.y",
+                60,
+                60,
+                -1.75,
+                -1.25,
+                BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
+              );
 
-            const bounceAnim = BABYLON.Animation.CreateAndStartAnimation(
-              "goalBounce",
-              player,
-              "position.y",
-              60,
-              60,
-              -1.75,
-              -1.25,
-              BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
-            );
-
-            BABYLON.Animation.CreateAndStartAnimation(
-              "goalSpin",
-              player,
-              "rotation.y",
-              60,
-              120,
-              0,
-              Math.PI * 4,
-              BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
-              undefined,
-              () => {
-                if (bounceAnim) bounceAnim.stop();
-                player.position.y = -1.75;
-                if (countSkip) {
-                  count = 0;
-                  countSkip = false;
-                }
-                updateReplay();
-              },
-            );
+              BABYLON.Animation.CreateAndStartAnimation(
+                "goalSpin",
+                player,
+                "rotation.y",
+                60,
+                120,
+                0,
+                Math.PI * 4,
+                BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+                undefined,
+                () => {
+                  if (bounceAnim) bounceAnim.stop();
+                  player.position.y = -1.75;
+                  if (countSkip) {
+                    count = 0;
+                    countSkip = false;
+                  }
+                  updateReplay();
+                },
+              );
+            }
           }
         }
         count++;

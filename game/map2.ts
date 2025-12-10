@@ -1,5 +1,6 @@
 import {
   createGoal,
+  createPiston,
   createPlayer,
   type GameObject,
   type MovePlan,
@@ -11,6 +12,7 @@ export function map2() {
   const objects: GameObject[] = [];
   objects.push(createGoal(7, 7));
   objects.push(createPlayer(3, 3));
+  objects.push(createPiston(5, 6, "down"));
   return {
     gameObjects: objects,
     defaultEnergy: 9,
@@ -56,6 +58,26 @@ export function createTick(objects: GameObject[]) {
             action: `failure-${operation}`,
           }];
         }
+        if (obj.type === "piston" && timer === obj.eventNumber) {
+          // ピストンが出てくるタイミングでその位置に行こうとしているので戻す
+          if (
+            obj.direction === "right" && tmpPos.x === obj.position.x + 1 &&
+              tmpPos.z === obj.position.z ||
+            obj.direction === "left" && tmpPos.x === obj.position.x - 1 &&
+              tmpPos.z === obj.position.z ||
+            obj.direction === "up" && tmpPos.z === obj.position.z + 1 &&
+              tmpPos.x === obj.position.x ||
+            obj.direction === "down" && tmpPos.z === obj.position.z - 1 &&
+              tmpPos.x === obj.position.x
+          ) {
+            return [{
+              id: player.id,
+              type: "player",
+              move: { ...player.position },
+              action: `failure-${operation}`,
+            }];
+          }
+        }
       }
 
       // 問題なく移動できた
@@ -72,21 +94,14 @@ export function createTick(objects: GameObject[]) {
     // 積極的なstay もしくは、後手番及び評価の操作
 
     timer++;
-    if (timer % 5 !== 0) {
+    if (timer % 5 === 0) {
       timer = 0;
     }
 
     // ゴールの座標なので成功
     for (const obj of objects.filter((obj) => obj.type === "goal")) {
-      // console.log(
-      //   "Goal position:",
-      //   obj.position,
-      //   "Player target position:",
-      //   tmpPos,
-      // );
       if (obj.position.x === tmpPos.x && obj.position.z === tmpPos.z) {
         // ゴールに到達
-        //console.log("Goal reached at position:", tmpPos);
         player.position = tmpPos;
         return [{
           id: player.id,
@@ -99,11 +114,65 @@ export function createTick(objects: GameObject[]) {
 
     const movePlans: MovePlan[] = [];
 
-    for (const obj of objects) {
+    for (const obj of objects.filter((obj) => obj.type !== "player")) {
       if (obj.type === "goal") {
         // ゴールは動かない何もしない
       }
+      if (obj.type === "piston") {
+        const piston = obj;
+        if (timer !== piston.eventNumber) {
+          movePlans.push({
+            id: piston.id,
+            type: "piston",
+            action: "deactivate",
+            direction: piston.direction,
+          });
+        } else {
+          // ピストンを動かす
+          const playerNewPos = { ...player.position };
+          if (
+            piston.direction === "right" &&
+            player.position.x === piston.position.x + 1 &&
+            player.position.z === piston.position.z
+          ) {
+            playerNewPos.x += 1;
+          } else if (
+            piston.direction === "left" &&
+            player.position.x === piston.position.x - 1 &&
+            player.position.z === piston.position.z
+          ) {
+            playerNewPos.x -= 1;
+          } else if (
+            piston.direction === "up" &&
+            player.position.z === piston.position.z + 1 &&
+            player.position.x === piston.position.x
+          ) {
+            playerNewPos.z += 1;
+          } else if (
+            piston.direction === "down" &&
+            player.position.z === piston.position.z - 1 &&
+            player.position.x === piston.position.x
+          ) {
+            playerNewPos.z -= 1;
+          }
+          objects.find((obj) => obj.id === player.id)!.position = playerNewPos;
+          movePlans.push({
+            id: player.id,
+            type: "player",
+            move: { ...playerNewPos },
+            action: "move",
+          });
+          movePlans.push({
+            id: piston.id,
+            type: "piston",
+            action: "activate",
+            direction: piston.direction,
+          });
+          // プレイヤーの新しい位置がマップ外か他のオブジェクトと重なる場合、押し出し失敗
+        }
+      }
     }
+
     return movePlans;
   };
 }
@@ -197,6 +266,11 @@ export const defaultSimulateResult = {
     id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
     type: "player",
     position: { x: 3, z: 3 },
+  }, {
+    id: "piston-df6ffef2-0d82-4f5c-be0c-e9660a5c5a07",
+    type: "piston",
+    position: { x: 5, z: 6 },
+    direction: "up",
   }],
   movePlan: [
     [

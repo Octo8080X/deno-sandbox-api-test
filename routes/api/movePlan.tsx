@@ -20,7 +20,7 @@ function createSrcCode(userScript: string, gameMap: GameMap): string {
 }
 
 async function simulateSandbox(userScript: string, gameMap: GameMap) {
-  const sandbox = await Sandbox.create();
+  await using sandbox = await Sandbox.create();
 
   const libScriptName = "gameObject.ts";
   const libScriptCode = await Deno.readTextFile(

@@ -76,7 +76,7 @@ function createTick(objects: GameObject[]) {
       //);
       if (obj.position.x === tmpPos.x && obj.position.z === tmpPos.z) {
         // ゴールに到達
-        console.log("Goal reached at position:", tmpPos);
+        //console.log("Goal reached at position:", tmpPos);
         player.position = tmpPos;
         return [{
           id: player.id,
