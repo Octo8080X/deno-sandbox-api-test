@@ -334,10 +334,8 @@ export function gameViewer(
 
       if (count < movePlan.length) {
         for (const move of movePlan[count]) {
-          console.log(move);
           if (move.type === "piston") {
             // ピストンのアニメーション
-
             const piston = objects[move.id];
             // objects 配列からピストンオブジェクトを取得
             const pistonBaseProp = props.simulateResult.objects.find(
@@ -355,17 +353,55 @@ export function gameViewer(
               actionProp = "position.z";
               newPistonheadPos.z = basePosition?.z - 3.5;
             }
+            if (move.direction === "up" && move.action === "activate") {
+              actionProp = "position.z";
+              newPistonheadPos.z = basePosition?.z + 1 - 3.5;
+            }
+            if (move.direction === "up" && move.action === "deactivate") {
+              actionProp = "position.z";
+              newPistonheadPos.z = basePosition?.z - 3.5;
+            }
+            if (move.direction === "right" && move.action === "activate") {
+              actionProp = "position.x";
+              newPistonheadPos.x = basePosition?.x + 1 - 3.5;
+            }
+            if (move.direction === "right" && move.action === "deactivate") {
+              actionProp = "position.x";
+              newPistonheadPos.x = basePosition?.x - 3.5;
+            }
+            if (move.direction === "left" && move.action === "activate") {
+              actionProp = "position.x";
+              newPistonheadPos.x = basePosition?.x - 1 - 3.5;
+            }
+            if (move.direction === "left" && move.action === "deactivate") {
+              actionProp = "position.x";
+              newPistonheadPos.x = basePosition?.x - 3.5;
+            }
+            if (actionProp === "position.x") {
+              BABYLON.Animation.CreateAndStartAnimation(
+                "pistonMove",
+                piston,
+                actionProp,
+                60,
+                30,
+                piston.position.x,
+                newPistonheadPos.x,
+                BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+              );
+            }
 
-            BABYLON.Animation.CreateAndStartAnimation(
-              "pistonMove",
-              piston,
-              actionProp,
-              60,
-              30,
-              piston.position.z,
-              newPistonheadPos.z,
-              BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
-            );
+            if (actionProp === "position.z") {
+              BABYLON.Animation.CreateAndStartAnimation(
+                "pistonMove",
+                piston,
+                actionProp,
+                60,
+                30,
+                piston.position.z,
+                newPistonheadPos.z,
+                BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+              );
+            }
           }
           if (move.type === "player") {
             if (move.action === "move") {

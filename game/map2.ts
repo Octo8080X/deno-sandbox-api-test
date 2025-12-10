@@ -13,6 +13,7 @@ export function map2() {
   objects.push(createGoal(7, 7));
   objects.push(createPlayer(3, 3));
   objects.push(createPiston(5, 6, "down"));
+  objects.push(createPiston(3, 4, "right"));
   return {
     gameObjects: objects,
     defaultEnergy: 9,
