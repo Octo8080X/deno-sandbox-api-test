@@ -85,6 +85,6 @@ export function createPiston(
     type: "piston",
     position: { x, z },
     direction,
-    eventNumber: Math.floor(Math.random() * 5),
+    eventNumber: Math.floor(Math.random() * 4) + 1,
   };
 }

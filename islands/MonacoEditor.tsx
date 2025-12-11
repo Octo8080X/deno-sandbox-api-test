@@ -51,6 +51,12 @@ declare function moveRight(): void;
 declare function moveLeft(): void;
 declare function moveUp(): void;
 declare function moveDown(): void;
+declare function stay(): void;
+declare function repeat(conditionFn: () => boolean, actionFn: () => void): void;
+declare function isObstacleRight(): boolean;
+declare function isObstacleLeft(): boolean;
+declare function isObstacleUp(): boolean;
+declare function isObstacleDown(): boolean;
             `,
             "ts:game-functions.d.ts",
           );
@@ -62,6 +68,12 @@ declare function moveRight(): void;
 declare function moveLeft(): void;
 declare function moveUp(): void;
 declare function moveDown(): void;
+declare function stay(): void;
+declare function repeat(conditionFn: () => boolean, actionFn: () => void): void;
+declare function isObstacleRight(): boolean;
+declare function isObstacleLeft(): boolean;
+declare function isObstacleUp(): boolean;
+declare function isObstacleDown(): boolean;
             `,
             "ts:game-functions.d.ts",
           );

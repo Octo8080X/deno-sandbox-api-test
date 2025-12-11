@@ -10,19 +10,19 @@ import {
 
 export function map2() {
   const objects: GameObject[] = [];
-  objects.push(createGoal(7, 7));
-  objects.push(createPlayer(3, 3));
-  objects.push(createPiston(5, 6, "down"));
-  objects.push(createPiston(3, 4, "right"));
+  objects.push(createGoal(7, 2));
+  objects.push(createPlayer(1, 3));
+  objects.push(createPiston(3, 4, "down"));
+  objects.push(createPiston(6, 4, "down"));
   return {
     gameObjects: objects,
-    defaultEnergy: 9,
+    defaultEnergy: 7,
   };
 }
 
-export function createTick(objects: GameObject[]) {
-  let timer = Math.floor(Math.random() * 5);
+let timer = 0;
 
+export function createTick(objects: GameObject[]) {
   return function (operation: Operation): MovePlan[] {
     const player = objects.find((obj) => obj.type === "player")!;
     const tmpPos = { ...player.position };
@@ -233,16 +233,103 @@ export function moveDown() {
   energyHistory.push(energyHistory[energyHistory.length - 1]);
 }
 
+function isObstacle(pos1: { x: number; z: number }, object: GameObject) {
+  if (object.type === "piston") {
+    if (timer === object.eventNumber) {
+      // ピストンが出ているので障害物とみなす
+      if (
+        object.direction === "right" && pos1.x === object.position.x + 1 &&
+          pos1.z === object.position.z ||
+        object.direction === "left" && pos1.x === object.position.x - 1 &&
+          pos1.z === object.position.z ||
+        object.direction === "up" && pos1.z === object.position.z + 1 &&
+          pos1.x === object.position.x ||
+        object.direction === "down" && pos1.z === object.position.z - 1 &&
+          pos1.x === object.position.x
+      ) {
+        return true;
+      }
+    }
+    // ピストン自体も障害物である
+    if (pos1.x === object.position.x && pos1.z === object.position.z) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// 障害物があるか確認する
+export function isObstacleRight() {
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  const lookPos = { x: player.position.x + 1, z: player.position.z };
+  for (const obj of gameObjects.filter((obj) => obj.id !== player.id)) {
+    if (isObstacle(lookPos, obj)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function isObstacleLeft() {
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  const lookPos = { x: player.position.x - 1, z: player.position.z };
+  for (const obj of gameObjects.filter((obj) => obj.id !== player.id)) {
+    if (isObstacle(lookPos, obj)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function isObstacleUp() {
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  const lookPos = { x: player.position.x, z: player.position.z + 1 };
+  for (const obj of gameObjects.filter((obj) => obj.id !== player.id)) {
+    if (isObstacle(lookPos, obj)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function isObstacleDown() {
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  const lookPos = { x: player.position.x, z: player.position.z - 1 };
+  for (const obj of gameObjects.filter((obj) => obj.id !== player.id)) {
+    if (isObstacle(lookPos, obj)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// 第一引数に渡された関数を実行して判定し、trueであれば
+// 第二引数に渡された関数を実行し、falseであれば何もしない。
+// ただし、最大10回まで。処理が返ってこないことを防止する
+export function repeat(conditionFn: () => boolean, actionFn: () => void) {
+  let count = 0;
+  while (conditionFn() && count < 10) {
+    actionFn();
+    count++;
+  }
+}
+
 export function stay() {
-  tick("stay");
+  movePlan.push(tick("stay"));
   energyHistory.push(energyHistory[energyHistory.length - 1]);
 }
 
 createStart();
 
 export function getSimulateResult(): SimulateResult {
+  // 座標更新されているので初期に戻す
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  player.position.x = movePlan[0].find((o) => o.id === player.id)!.move.x;
+  player.position.z = movePlan[0].find((o) => o.id === player.id)!.move.z;
+
   return {
-    objects: gameObjects,
+    objects: [...gameObjects, player],
     movePlan: movePlan,
     energyHistory: energyHistory,
   };
@@ -251,79 +338,184 @@ export function getSimulateResult(): SimulateResult {
 export const defaultCommands = [
   "// Welcome to Game",
   "moveRight();",
-  "moveUp();",
+  "",
+  "repeat(()=>isObstacleRight(),()=>{",
+  '  console.log("Obstacle on the right!");',
+  "  stay();",
+  "})",
+  "",
+  'console.log("No obstacles")',
   "moveRight();",
-  "moveUp();",
-  "moveLeft();",
-  "moveDown();",
+  "moveRight();",
 ];
 
 export const defaultSimulateResult = {
-  objects: [{
-    id: "goal-a2b778e2-c2e5-44ea-aa08-00cb0b3dd083",
-    type: "goal",
-    position: { x: 7, z: 7 },
-  }, {
-    id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-    type: "player",
-    position: { x: 3, z: 3 },
-  }, {
-    id: "piston-df6ffef2-0d82-4f5c-be0c-e9660a5c5a07",
-    type: "piston",
-    position: { x: 5, z: 6 },
-    direction: "up",
-  }],
-  movePlan: [
+  "objects": [
+    {
+      "id": "goal-1f681330-5de8-4040-bac4-657f930b27b4",
+      "type": "goal",
+      "position": {
+        "x": 7,
+        "z": 2,
+      },
+    },
+    {
+      "id": "player-214b0f7d-9f7a-49ef-a9a7-0d157f919a30",
+      "type": "player",
+      "position": {
+        "x": 1,
+        "z": 3,
+      },
+    },
+    {
+      "id": "piston-431b59fc-551c-4bcc-925f-8363b9d347e9",
+      "type": "piston",
+      "position": {
+        "x": 3,
+        "z": 4,
+      },
+      "direction": "down",
+      "eventNumber": 1,
+    },
+    {
+      "id": "piston-4d583f4d-ec5d-4e57-951e-054f2c4169f9",
+      "type": "piston",
+      "position": {
+        "x": 6,
+        "z": 4,
+      },
+      "direction": "down",
+      "eventNumber": 2,
+    },
+  ],
+  "movePlan": [
     [
       {
-        action: "start",
-        id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-        move: { x: 3, z: 3 },
-        type: "player",
+        "id": "player-214b0f7d-9f7a-49ef-a9a7-0d157f919a30",
+        "type": "player",
+        "move": {
+          "x": 1,
+          "z": 3,
+        },
+        "action": "start",
       },
     ],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 4, z: 3 },
-      action: "move",
-    }],
-    [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 4, z: 4 },
-      action: "move",
-    }],
-    [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 5, z: 4 },
-      action: "move",
-    }],
-    [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 5, z: 5 },
-      action: "move",
-    }],
-    [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 4, z: 5 },
-      action: "move",
-    }],
-    [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 4, z: 4 },
-      action: "move",
-    }],
-    [],
+    [
+      {
+        "id": "player-214b0f7d-9f7a-49ef-a9a7-0d157f919a30",
+        "type": "player",
+        "move": {
+          "x": 2,
+          "z": 3,
+        },
+        "action": "move",
+      },
+    ],
+    [
+      {
+        "id": "player-214b0f7d-9f7a-49ef-a9a7-0d157f919a30",
+        "type": "player",
+        "move": {
+          "x": 2,
+          "z": 3,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-431b59fc-551c-4bcc-925f-8363b9d347e9",
+        "type": "piston",
+        "action": "activate",
+        "direction": "down",
+      },
+      {
+        "id": "piston-4d583f4d-ec5d-4e57-951e-054f2c4169f9",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "down",
+      },
+    ],
+    [
+      {
+        "id": "piston-431b59fc-551c-4bcc-925f-8363b9d347e9",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "down",
+      },
+      {
+        "id": "player-214b0f7d-9f7a-49ef-a9a7-0d157f919a30",
+        "type": "player",
+        "move": {
+          "x": 2,
+          "z": 3,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-4d583f4d-ec5d-4e57-951e-054f2c4169f9",
+        "type": "piston",
+        "action": "activate",
+        "direction": "down",
+      },
+    ],
+    [
+      {
+        "id": "player-214b0f7d-9f7a-49ef-a9a7-0d157f919a30",
+        "type": "player",
+        "move": {
+          "x": 3,
+          "z": 3,
+        },
+        "action": "move",
+      },
+    ],
+    [
+      {
+        "id": "piston-431b59fc-551c-4bcc-925f-8363b9d347e9",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "down",
+      },
+      {
+        "id": "piston-4d583f4d-ec5d-4e57-951e-054f2c4169f9",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "down",
+      },
+    ],
+    [
+      {
+        "id": "player-214b0f7d-9f7a-49ef-a9a7-0d157f919a30",
+        "type": "player",
+        "move": {
+          "x": 4,
+          "z": 3,
+        },
+        "action": "move",
+      },
+    ],
+    [
+      {
+        "id": "piston-431b59fc-551c-4bcc-925f-8363b9d347e9",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "down",
+      },
+      {
+        "id": "piston-4d583f4d-ec5d-4e57-951e-054f2c4169f9",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "down",
+      },
+    ],
   ],
-  energyHistory: [10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1],
+  "energyHistory": [
+    9,
+    8,
+    8,
+    8,
+    7,
+    7,
+    6,
+    6,
+  ],
 };

@@ -17,9 +17,9 @@ export function map1() {
   };
 }
 
-export function createTick(objects: GameObject[]) {
-  let timer = Math.floor(Math.random() * 5);
+let timer = 0;
 
+export function createTick(objects: GameObject[]) {
   return function (operation: Operation): MovePlan[] {
     const player = objects.find((obj) => obj.type === "player")!;
     const tmpPos = { ...player.position };
@@ -163,8 +163,89 @@ export function moveDown() {
   energyHistory.push(energyHistory[energyHistory.length - 1]);
 }
 
+function isObstacle(pos1: { x: number; z: number }, object: GameObject) {
+  if (object.type === "piston") {
+    if (timer === object.eventNumber) {
+      // ピストンが出ているので障害物とみなす
+      if (
+        object.direction === "right" && pos1.x === object.position.x + 1 &&
+          pos1.z === object.position.z ||
+        object.direction === "left" && pos1.x === object.position.x - 1 &&
+          pos1.z === object.position.z ||
+        object.direction === "up" && pos1.z === object.position.z + 1 &&
+          pos1.x === object.position.x ||
+        object.direction === "down" && pos1.z === object.position.z - 1 &&
+          pos1.x === object.position.x
+      ) {
+        return true;
+      }
+    }
+    // ピストン自体も障害物である
+    if (pos1.x === object.position.x && pos1.z === object.position.z) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// 障害物があるか確認する
+export function isObstacleRight() {
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  const lookPos = { x: player.position.x + 1, z: player.position.z };
+  for (const obj of gameObjects.filter((obj) => obj.id !== player.id)) {
+    if (isObstacle(lookPos, obj)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function isObstacleLeft() {
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  const lookPos = { x: player.position.x - 1, z: player.position.z };
+  for (const obj of gameObjects.filter((obj) => obj.id !== player.id)) {
+    if (isObstacle(lookPos, obj)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function isObstacleUp() {
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  const lookPos = { x: player.position.x, z: player.position.z + 1 };
+  for (const obj of gameObjects.filter((obj) => obj.id !== player.id)) {
+    if (isObstacle(lookPos, obj)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function isObstacleDown() {
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  const lookPos = { x: player.position.x, z: player.position.z - 1 };
+  for (const obj of gameObjects.filter((obj) => obj.id !== player.id)) {
+    if (isObstacle(lookPos, obj)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// 第一引数に渡された関数を実行して判定し、trueであれば
+// 第二引数に渡された関数を実行し、falseであれば何もしない。
+// ただし、最大10回まで。処理が返ってこないことを防止する
+export function repeat(conditionFn: () => boolean, actionFn: () => void) {
+  let count = 0;
+  while (conditionFn() && count < 10) {
+    actionFn();
+    count++;
+  }
+}
+
 export function stay() {
-  tick("stay");
   energyHistory.push(energyHistory[energyHistory.length - 1]);
 }
 

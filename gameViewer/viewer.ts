@@ -288,7 +288,14 @@ export function gameViewer(
       }
     }
 
-    const player = createPlayer(scene, 3, 3);
+    const playerObject = props.simulateResult.objects.find(
+      (o) => o.type === "player",
+    )!;
+    const player = createPlayer(
+      scene,
+      playerObject.position.x,
+      playerObject.position.z,
+    );
 
     let count = 0;
     let countSkip = false;
