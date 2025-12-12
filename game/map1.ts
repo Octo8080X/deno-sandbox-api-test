@@ -378,52 +378,118 @@ export const defaultCommands = [
 ];
 
 export const defaultSimulateResult = {
-  objects: [{
-    id: "goal-a2b778e2-c2e5-44ea-aa08-00cb0b3dd083",
-    type: "goal",
-    position: { x: 5, z: 5 },
-  }, {
-    id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-    type: "player",
-    position: { x: 3, z: 3 },
-  }],
-  movePlan: [
+  "objects": [
+    {
+      "id": "goal-01b6b9ba-cbe2-4daa-86ed-b8f98110ced3",
+      "type": "goal",
+      "position": {
+        "x": 5,
+        "z": 5,
+      },
+    },
+    {
+      "id": "player-a898e3ba-2083-49f7-bd01-a2f6110d5f31",
+      "type": "player",
+      "position": {
+        "x": 3,
+        "z": 3,
+      },
+    },
+    {
+      "id": "box-e8bb9ca2-02c5-4088-8342-ec174e1388f6",
+      "type": "box",
+      "position": {
+        "x": 3,
+        "z": 4,
+      },
+    },
+    {
+      "id": "box-2bc42da9-d8b8-4859-ac94-03529d0c2f27",
+      "type": "box",
+      "position": {
+        "x": 5,
+        "z": 3,
+      },
+    },
+    {
+      "id": "player-a898e3ba-2083-49f7-bd01-a2f6110d5f31",
+      "type": "player",
+      "position": {
+        "x": 3,
+        "z": 3,
+      },
+    },
+  ],
+  "movePlan": [
     [
       {
-        action: "start",
-        id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-        move: { x: 3, z: 3 },
-        type: "player",
+        "id": "player-a898e3ba-2083-49f7-bd01-a2f6110d5f31",
+        "type": "player",
+        "move": {
+          "x": 3,
+          "z": 3,
+        },
+        "action": "start",
       },
     ],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 4, z: 3 },
-      action: "move",
-    }],
+    [
+      {
+        "id": "player-a898e3ba-2083-49f7-bd01-a2f6110d5f31",
+        "type": "player",
+        "move": {
+          "x": 4,
+          "z": 3,
+        },
+        "action": "move",
+      },
+    ],
     [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 4, z: 4 },
-      action: "move",
-    }],
+    [
+      {
+        "id": "player-a898e3ba-2083-49f7-bd01-a2f6110d5f31",
+        "type": "player",
+        "move": {
+          "x": 4,
+          "z": 4,
+        },
+        "action": "move",
+      },
+    ],
     [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 3, z: 4 },
-      action: "move",
-    }],
+    [
+      {
+        "id": "player-a898e3ba-2083-49f7-bd01-a2f6110d5f31",
+        "type": "player",
+        "move": {
+          "x": 4,
+          "z": 4,
+        },
+        "action": "failure-left",
+      },
+    ],
     [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 3, z: 3 },
-      action: "move",
-    }],
+    [
+      {
+        "id": "player-a898e3ba-2083-49f7-bd01-a2f6110d5f31",
+        "type": "player",
+        "move": {
+          "x": 4,
+          "z": 3,
+        },
+        "action": "move",
+      },
+    ],
     [],
   ],
-  energyHistory: [5, 4, 4, 3, 3, 2, 2, 1],
+  "energyHistory": [
+    5,
+    4,
+    4,
+    3,
+    3,
+    2,
+    2,
+    1,
+    1,
+  ],
 };

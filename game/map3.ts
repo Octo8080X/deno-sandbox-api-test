@@ -22,6 +22,7 @@ export function map3() {
   objects.push(createSlideFloor(6, 5, "up"));
   objects.push(createSlideFloor(6, 6, "left"));
   objects.push(createBox(4, 5));
+  objects.push(createBox(7, 4));
   objects.push(createPiston(3, 2, "right"));
   objects.push(createSlideFloor(5, 2, "right"));
   objects.push(createSlideFloor(6, 2, "right"));
@@ -390,7 +391,10 @@ export function getSimulateResult(): SimulateResult {
 export const defaultCommands = [
   "// Welcome to Game",
   "moveRight();",
-  "stay();",
+  "repeat(()=>!isObstacleRight(),()=>{",
+  "  stay();",
+  "})",
+  "moveLeft();",
   "stay();",
   "stay();",
   "stay();",
@@ -400,7 +404,7 @@ export const defaultCommands = [
 export const defaultSimulateResult = {
   "objects": [
     {
-      "id": "goal-957933a2-eef4-4968-9e9e-5d12b442e96c",
+      "id": "goal-081ed0d3-e544-45d9-899f-2b1d74057918",
       "type": "goal",
       "position": {
         "x": 7,
@@ -408,7 +412,7 @@ export const defaultSimulateResult = {
       },
     },
     {
-      "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+      "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
       "type": "player",
       "position": {
         "x": 1,
@@ -416,7 +420,7 @@ export const defaultSimulateResult = {
       },
     },
     {
-      "id": "slideFloor-0d522316-ad9b-4780-93f4-941b5394e96d",
+      "id": "slideFloor-7db6222c-3a1c-4bfb-9923-0217c84d3046",
       "type": "slideFloor",
       "position": {
         "x": 2,
@@ -425,7 +429,7 @@ export const defaultSimulateResult = {
       "direction": "right",
     },
     {
-      "id": "slideFloor-3fd373e0-29ea-4b28-ba85-459ffc910c97",
+      "id": "slideFloor-2707929f-3a33-43ba-973b-5fbb5e2d0385",
       "type": "slideFloor",
       "position": {
         "x": 3,
@@ -434,7 +438,7 @@ export const defaultSimulateResult = {
       "direction": "right",
     },
     {
-      "id": "slideFloor-10405aab-c271-4b7e-a9f2-4011c19caeb2",
+      "id": "slideFloor-8802fdee-63b9-4394-8094-08cf35695d39",
       "type": "slideFloor",
       "position": {
         "x": 4,
@@ -443,7 +447,7 @@ export const defaultSimulateResult = {
       "direction": "right",
     },
     {
-      "id": "slideFloor-611ddfc2-c557-4d58-8af4-bae04e27473f",
+      "id": "slideFloor-e05af97b-ead3-465f-a67d-e487a419a3d4",
       "type": "slideFloor",
       "position": {
         "x": 5,
@@ -452,7 +456,7 @@ export const defaultSimulateResult = {
       "direction": "right",
     },
     {
-      "id": "slideFloor-21689751-3bfe-42e4-95e8-456846644aaa",
+      "id": "slideFloor-20e63ed7-a12a-49f6-b29a-8141586d1993",
       "type": "slideFloor",
       "position": {
         "x": 6,
@@ -461,7 +465,7 @@ export const defaultSimulateResult = {
       "direction": "up",
     },
     {
-      "id": "slideFloor-ee3e4661-a2d5-48a6-938b-eb03b1b95c13",
+      "id": "slideFloor-c9394d25-89f5-4a7c-a167-f49e7ca873b3",
       "type": "slideFloor",
       "position": {
         "x": 6,
@@ -470,7 +474,7 @@ export const defaultSimulateResult = {
       "direction": "up",
     },
     {
-      "id": "slideFloor-17def1a3-9282-49f5-b302-269fbdcd80cb",
+      "id": "slideFloor-603901f3-8046-4cd1-aeac-b37ef8968645",
       "type": "slideFloor",
       "position": {
         "x": 6,
@@ -479,7 +483,7 @@ export const defaultSimulateResult = {
       "direction": "left",
     },
     {
-      "id": "box-ca97753e-3694-42c1-8e9d-666224b17a1a",
+      "id": "box-5fbadfb6-9ada-4716-9408-dc7d5d3bf856",
       "type": "box",
       "position": {
         "x": 4,
@@ -487,17 +491,25 @@ export const defaultSimulateResult = {
       },
     },
     {
-      "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+      "id": "box-d52014b8-5ac2-4ffd-89d8-2fe88f410d8d",
+      "type": "box",
+      "position": {
+        "x": 7,
+        "z": 4,
+      },
+    },
+    {
+      "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
       "type": "piston",
       "position": {
         "x": 3,
         "z": 2,
       },
       "direction": "right",
-      "eventNumber": 1,
+      "eventNumber": 2,
     },
     {
-      "id": "slideFloor-f07f9097-cf26-48ae-aafe-959b6568db55",
+      "id": "slideFloor-55330590-b59f-408f-ae02-070968327fa0",
       "type": "slideFloor",
       "position": {
         "x": 5,
@@ -506,7 +518,7 @@ export const defaultSimulateResult = {
       "direction": "right",
     },
     {
-      "id": "slideFloor-eaa53959-27cd-4557-928e-339bc3c91835",
+      "id": "slideFloor-8c6ae569-b9ab-4189-99dd-bbb8574a81e2",
       "type": "slideFloor",
       "position": {
         "x": 6,
@@ -515,7 +527,7 @@ export const defaultSimulateResult = {
       "direction": "right",
     },
     {
-      "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+      "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
       "type": "player",
       "position": {
         "x": 1,
@@ -526,7 +538,7 @@ export const defaultSimulateResult = {
   "movePlan": [
     [
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 1,
@@ -537,7 +549,7 @@ export const defaultSimulateResult = {
     ],
     [
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 2,
@@ -548,7 +560,7 @@ export const defaultSimulateResult = {
     ],
     [
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 3,
@@ -557,24 +569,15 @@ export const defaultSimulateResult = {
         "action": "move",
       },
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
-        "type": "player",
-        "move": {
-          "x": 3,
-          "z": 4,
-        },
-        "action": "move",
-      },
-      {
-        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
         "type": "piston",
-        "action": "activate",
+        "action": "deactivate",
         "direction": "right",
       },
     ],
     [
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 4,
@@ -583,15 +586,24 @@ export const defaultSimulateResult = {
         "action": "move",
       },
       {
-        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
+        "type": "player",
+        "move": {
+          "x": 4,
+          "z": 4,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
         "type": "piston",
-        "action": "deactivate",
+        "action": "activate",
         "direction": "right",
       },
     ],
     [
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 5,
@@ -600,7 +612,7 @@ export const defaultSimulateResult = {
         "action": "move",
       },
       {
-        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
         "type": "piston",
         "action": "deactivate",
         "direction": "right",
@@ -608,7 +620,7 @@ export const defaultSimulateResult = {
     ],
     [
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 6,
@@ -617,7 +629,7 @@ export const defaultSimulateResult = {
         "action": "move",
       },
       {
-        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
         "type": "piston",
         "action": "deactivate",
         "direction": "right",
@@ -625,7 +637,35 @@ export const defaultSimulateResult = {
     ],
     [
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
+        "type": "player",
+        "move": {
+          "x": 5,
+          "z": 4,
+        },
+        "action": "move",
+      },
+    ],
+    [
+      {
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
+        "type": "player",
+        "move": {
+          "x": 6,
+          "z": 4,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "right",
+      },
+    ],
+    [
+      {
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 6,
@@ -634,7 +674,7 @@ export const defaultSimulateResult = {
         "action": "move",
       },
       {
-        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
         "type": "piston",
         "action": "deactivate",
         "direction": "right",
@@ -642,7 +682,7 @@ export const defaultSimulateResult = {
     ],
     [
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 6,
@@ -651,7 +691,7 @@ export const defaultSimulateResult = {
         "action": "move",
       },
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 6,
@@ -660,7 +700,7 @@ export const defaultSimulateResult = {
         "action": "move",
       },
       {
-        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
         "type": "piston",
         "action": "activate",
         "direction": "right",
@@ -668,7 +708,7 @@ export const defaultSimulateResult = {
     ],
     [
       {
-        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "id": "player-33ee7d07-1674-4c58-859c-a82ebe1b3ac6",
         "type": "player",
         "move": {
           "x": 5,
@@ -677,7 +717,15 @@ export const defaultSimulateResult = {
         "action": "move",
       },
       {
-        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "right",
+      },
+    ],
+    [
+      {
+        "id": "piston-24b8b9d0-ef8a-4fca-afb9-67574fd20bcf",
         "type": "piston",
         "action": "deactivate",
         "direction": "right",
@@ -691,8 +739,11 @@ export const defaultSimulateResult = {
     3,
     3,
     3,
-    3,
-    3,
-    3,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
   ],
 };

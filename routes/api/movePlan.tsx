@@ -4,6 +4,39 @@ import { Sandbox } from "@deno/sandbox";
 const OUTPUT_SPLITTER = "===MOVE_PLAN_START===" as const;
 type GameMap = "map1" | "map2" | "map3";
 
+// while や for ループの使用をチェックする関数
+function validateUserScript(
+  userScript: string,
+): { valid: boolean; error?: string } {
+  // コメントと文字列リテラルを除去してからチェック
+  const codeWithoutComments = userScript
+    .replace(/\/\/.*$/gm, "") // 単一行コメントを除去
+    .replace(/\/\*[\s\S]*?\*\//g, "") // 複数行コメントを除去
+    .replace(/"(?:[^"\\]|\\.)*"/g, '""') // ダブルクォート文字列を除去
+    .replace(/'(?:[^'\\]|\\.)*'/g, "''") // シングルクォート文字列を除去
+    .replace(/`(?:[^`\\]|\\.)*`/g, "``"); // テンプレートリテラルを除去
+
+  // while ループのチェック（while の後に ( があるパターン）
+  if (/\bwhile\s*\(/.test(codeWithoutComments)) {
+    return {
+      valid: false,
+      error:
+        "Error: 'while' loops are not allowed. Please use the repeat() function instead.",
+    };
+  }
+
+  // for ループのチェック（for の後に ( があるパターン）
+  if (/\bfor\s*\(/.test(codeWithoutComments)) {
+    return {
+      valid: false,
+      error:
+        "Error: 'for' loops are not allowed. Please use the repeat() function instead.",
+    };
+  }
+
+  return { valid: true };
+}
+
 function createSrcCode(userScript: string, gameMap: GameMap): string {
   return `
   import { moveRight, moveUp, moveLeft, moveDown, stay, getSimulateResult, isObstacleRight, isObstacleUp, isObstacleLeft, isObstacleDown, repeat } from "./${gameMap}.ts";
@@ -136,12 +169,24 @@ export const handler = define.handlers({
     const userScript = await ctx.req.json();
 
     console.log(userScript);
+
+    // while や for ループの使用をチェック
+    const validation = validateUserScript(userScript.code);
+    if (!validation.valid) {
+      return Response.json({
+        simulateResult: {},
+        stdout: "",
+        stderr: validation.error,
+        status: "error",
+      });
+    }
+
     const simulateResult = await simulateSandbox(
       userScript.code,
       userScript.gameMap,
     );
 
-    console.log("Simulation result:", simulateResult);
+    console.log("Simulation result:", JSON.stringify(simulateResult, null, 2));
 
     return Response.json(simulateResult);
   },
