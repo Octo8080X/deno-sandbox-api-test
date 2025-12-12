@@ -17,7 +17,6 @@ export function map2() {
   objects.push(createPiston(3, 4, "down"));
   objects.push(createPiston(6, 4, "down"));
   objects.push(createBox(4, 2));
-  objects.push(createSlideFloor(3, 2, "left"));
   objects.push(createSlideFloor(2, 2, "left"));
   objects.push(createSlideFloor(1, 2, "left"));
 
@@ -399,7 +398,7 @@ export const defaultCommands = [
 export const defaultSimulateResult = {
   "objects": [
     {
-      "id": "goal-cdb6dbdd-4991-4c5d-94e1-4dde63631fa9",
+      "id": "goal-aa693e29-356b-49ff-b710-820119266d97",
       "type": "goal",
       "position": {
         "x": 7,
@@ -407,7 +406,7 @@ export const defaultSimulateResult = {
       },
     },
     {
-      "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
+      "id": "player-9bb1ae86-6ff4-4f23-bcd0-bddc6ebb330f",
       "type": "player",
       "position": {
         "x": 1,
@@ -415,27 +414,27 @@ export const defaultSimulateResult = {
       },
     },
     {
-      "id": "piston-af46fc68-80b0-422f-b0df-1fb2fc58d514",
+      "id": "piston-88e0d452-8609-43e9-b218-37b9549c50d5",
       "type": "piston",
       "position": {
         "x": 3,
         "z": 4,
       },
       "direction": "down",
-      "eventNumber": 1,
+      "eventNumber": 2,
     },
     {
-      "id": "piston-904b71c1-4baa-4c51-83f5-5ee5c20d475c",
+      "id": "piston-d00c78c2-2645-4786-a29b-21718ef2c844",
       "type": "piston",
       "position": {
         "x": 6,
         "z": 4,
       },
       "direction": "down",
-      "eventNumber": 2,
+      "eventNumber": 1,
     },
     {
-      "id": "box-6fa4b037-aad3-4115-93ee-a49d40b070a8",
+      "id": "box-56ecd4c1-5f8e-4320-bd56-36b9401b8b31",
       "type": "box",
       "position": {
         "x": 4,
@@ -443,16 +442,7 @@ export const defaultSimulateResult = {
       },
     },
     {
-      "id": "slideFloor-bff697bd-6c23-4a81-9c60-28f9dd5ee530",
-      "type": "slideFloor",
-      "position": {
-        "x": 3,
-        "z": 2,
-      },
-      "direction": "left",
-    },
-    {
-      "id": "slideFloor-2767ba10-c301-419f-9fdc-9558665d21e5",
+      "id": "slideFloor-07c90e5e-ed21-4584-bccb-91411d1f5ad4",
       "type": "slideFloor",
       "position": {
         "x": 2,
@@ -461,7 +451,7 @@ export const defaultSimulateResult = {
       "direction": "left",
     },
     {
-      "id": "slideFloor-2596f35b-3da3-4e19-aaad-1cdb458def36",
+      "id": "slideFloor-5fa81355-3f28-4389-bcdf-ef24c45205b8",
       "type": "slideFloor",
       "position": {
         "x": 1,
@@ -470,7 +460,7 @@ export const defaultSimulateResult = {
       "direction": "left",
     },
     {
-      "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
+      "id": "player-9bb1ae86-6ff4-4f23-bcd0-bddc6ebb330f",
       "type": "player",
       "position": {
         "x": 1,
@@ -481,7 +471,7 @@ export const defaultSimulateResult = {
   "movePlan": [
     [
       {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
+        "id": "player-9bb1ae86-6ff4-4f23-bcd0-bddc6ebb330f",
         "type": "player",
         "move": {
           "x": 1,
@@ -492,7 +482,7 @@ export const defaultSimulateResult = {
     ],
     [
       {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
+        "id": "player-9bb1ae86-6ff4-4f23-bcd0-bddc6ebb330f",
         "type": "player",
         "move": {
           "x": 2,
@@ -503,7 +493,13 @@ export const defaultSimulateResult = {
     ],
     [
       {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
+        "id": "piston-88e0d452-8609-43e9-b218-37b9549c50d5",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "down",
+      },
+      {
+        "id": "player-9bb1ae86-6ff4-4f23-bcd0-bddc6ebb330f",
         "type": "player",
         "move": {
           "x": 2,
@@ -512,13 +508,41 @@ export const defaultSimulateResult = {
         "action": "move",
       },
       {
-        "id": "piston-af46fc68-80b0-422f-b0df-1fb2fc58d514",
+        "id": "piston-d00c78c2-2645-4786-a29b-21718ef2c844",
+        "type": "piston",
+        "action": "activate",
+        "direction": "down",
+      },
+    ],
+    [
+      {
+        "id": "player-9bb1ae86-6ff4-4f23-bcd0-bddc6ebb330f",
+        "type": "player",
+        "move": {
+          "x": 3,
+          "z": 3,
+        },
+        "action": "move",
+      },
+    ],
+    [
+      {
+        "id": "player-9bb1ae86-6ff4-4f23-bcd0-bddc6ebb330f",
+        "type": "player",
+        "move": {
+          "x": 3,
+          "z": 2,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-88e0d452-8609-43e9-b218-37b9549c50d5",
         "type": "piston",
         "action": "activate",
         "direction": "down",
       },
       {
-        "id": "piston-904b71c1-4baa-4c51-83f5-5ee5c20d475c",
+        "id": "piston-d00c78c2-2645-4786-a29b-21718ef2c844",
         "type": "piston",
         "action": "deactivate",
         "direction": "down",
@@ -526,138 +550,27 @@ export const defaultSimulateResult = {
     ],
     [
       {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
+        "id": "player-9bb1ae86-6ff4-4f23-bcd0-bddc6ebb330f",
         "type": "player",
         "move": {
-          "x": 2,
-          "z": 3,
+          "x": 3,
+          "z": 2,
         },
         "action": "failure-right",
       },
     ],
     [
       {
-        "id": "piston-af46fc68-80b0-422f-b0df-1fb2fc58d514",
+        "id": "piston-88e0d452-8609-43e9-b218-37b9549c50d5",
         "type": "piston",
         "action": "deactivate",
         "direction": "down",
       },
       {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
-        "type": "player",
-        "move": {
-          "x": 2,
-          "z": 3,
-        },
-        "action": "move",
-      },
-      {
-        "id": "piston-904b71c1-4baa-4c51-83f5-5ee5c20d475c",
-        "type": "piston",
-        "action": "activate",
-        "direction": "down",
-      },
-    ],
-    [
-      {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
-        "type": "player",
-        "move": {
-          "x": 2,
-          "z": 2,
-        },
-        "action": "move",
-      },
-    ],
-    [
-      {
-        "id": "piston-af46fc68-80b0-422f-b0df-1fb2fc58d514",
+        "id": "piston-d00c78c2-2645-4786-a29b-21718ef2c844",
         "type": "piston",
         "action": "deactivate",
         "direction": "down",
-      },
-      {
-        "id": "piston-904b71c1-4baa-4c51-83f5-5ee5c20d475c",
-        "type": "piston",
-        "action": "deactivate",
-        "direction": "down",
-      },
-      {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
-        "type": "player",
-        "move": {
-          "x": 1,
-          "z": 2,
-        },
-        "action": "move",
-      },
-    ],
-    [
-      {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
-        "type": "player",
-        "move": {
-          "x": 2,
-          "z": 2,
-        },
-        "action": "move",
-      },
-    ],
-    [
-      {
-        "id": "piston-af46fc68-80b0-422f-b0df-1fb2fc58d514",
-        "type": "piston",
-        "action": "deactivate",
-        "direction": "down",
-      },
-      {
-        "id": "piston-904b71c1-4baa-4c51-83f5-5ee5c20d475c",
-        "type": "piston",
-        "action": "deactivate",
-        "direction": "down",
-      },
-      {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
-        "type": "player",
-        "move": {
-          "x": 1,
-          "z": 2,
-        },
-        "action": "move",
-      },
-    ],
-    [
-      {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
-        "type": "player",
-        "move": {
-          "x": 2,
-          "z": 2,
-        },
-        "action": "move",
-      },
-    ],
-    [
-      {
-        "id": "piston-af46fc68-80b0-422f-b0df-1fb2fc58d514",
-        "type": "piston",
-        "action": "deactivate",
-        "direction": "down",
-      },
-      {
-        "id": "piston-904b71c1-4baa-4c51-83f5-5ee5c20d475c",
-        "type": "piston",
-        "action": "deactivate",
-        "direction": "down",
-      },
-      {
-        "id": "player-5d9abf77-5b3c-4df4-98f1-2812b56ab7f3",
-        "type": "player",
-        "move": {
-          "x": 1,
-          "z": 2,
-        },
-        "action": "move",
       },
     ],
   ],
@@ -669,9 +582,5 @@ export const defaultSimulateResult = {
     5,
     4,
     4,
-    3,
-    3,
-    2,
-    2,
   ],
 };
