@@ -228,8 +228,91 @@ export default function Game() {
           </div>
         </div>
       </div>
-      <div>
-        {/* 使うことができるメソッドの説明 */}
+      <div class="card bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body p-4">
+          <h2 class="card-title text-lg mb-4">📖 Available Methods</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Movement Methods */}
+            <div class="bg-base-200 rounded-lg p-4">
+              <h3 class="font-bold text-md mb-2">🎮 Movement</h3>
+              <ul class="space-y-2 text-sm">
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">moveRight()</code>
+                  <span class="ml-2">Move player to the right (+X direction)</span>
+                </li>
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">moveLeft()</code>
+                  <span class="ml-2">Move player to the left (-X direction)</span>
+                </li>
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">moveUp()</code>
+                  <span class="ml-2">Move player upward (+Z direction)</span>
+                </li>
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">moveDown()</code>
+                  <span class="ml-2">Move player downward (-Z direction)</span>
+                </li>
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">stay()</code>
+                  <span class="ml-2">Stay in the current position</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Obstacle Detection Methods */}
+            <div class="bg-base-200 rounded-lg p-4">
+              <h3 class="font-bold text-md mb-2">🔍 Obstacle Detection</h3>
+              <ul class="space-y-2 text-sm">
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">isObstacleRight()</code>
+                  <span class="ml-2">Returns true if obstacle is on the right</span>
+                </li>
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">isObstacleLeft()</code>
+                  <span class="ml-2">Returns true if obstacle is on the left</span>
+                </li>
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">isObstacleUp()</code>
+                  <span class="ml-2">Returns true if obstacle is above</span>
+                </li>
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">isObstacleDown()</code>
+                  <span class="ml-2">Returns true if obstacle is below</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Utility Methods */}
+            <div class="bg-base-200 rounded-lg p-4 md:col-span-2">
+              <h3 class="font-bold text-md mb-2">🛠️ Utility</h3>
+              <ul class="space-y-2 text-sm">
+                <li>
+                  <code class="bg-neutral text-neutral-content px-2 py-1 rounded">repeat(conditionFn, actionFn)</code>
+                  <span class="ml-2">Repeat actionFn while conditionFn returns true (max 10 times)</span>
+                </li>
+              </ul>
+              <div class="mt-3 p-3 bg-base-300 rounded text-xs font-mono">
+                <span class="text-info">{`// Example:`}</span><br />
+                repeat(() =&gt; isObstacleRight(), () =&gt; moveRight());
+              </div>
+            </div>
+
+            {/* Warning */}
+            <div class="bg-warning/20 rounded-lg p-4 md:col-span-2 border border-warning">
+              <h3 class="font-bold text-md mb-2">⚠️ Important Notes</h3>
+              <ul class="space-y-2 text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-warning font-bold">✕</span>
+                  <span><code class="bg-neutral text-neutral-content px-2 py-1 rounded">while</code> and <code class="bg-neutral text-neutral-content px-2 py-1 rounded">for</code> loops are <strong>not available</strong> in the sandbox.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-success font-bold">✓</span>
+                  <span>Use the <code class="bg-neutral text-neutral-content px-2 py-1 rounded">repeat()</code> function instead for iteration.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
       <div>
         <footer class="footer footer-center p-4 bg-base-200 text-base-content rounded">

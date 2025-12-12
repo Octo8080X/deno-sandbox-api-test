@@ -357,8 +357,13 @@ export function stay() {
 createStart();
 
 export function getSimulateResult(): SimulateResult {
+  // 座標更新されているので初期に戻す
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  player.position.x = movePlan[0].find((o) => o.id === player.id)!.move.x;
+  player.position.z = movePlan[0].find((o) => o.id === player.id)!.move.z;
+
   return {
-    objects: gameObjects,
+    objects: [...gameObjects, player],
     movePlan: movePlan,
     energyHistory: energyHistory,
   };
