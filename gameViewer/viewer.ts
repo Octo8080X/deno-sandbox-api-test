@@ -1,4 +1,5 @@
 import { SimulateResult } from "../game/gameObject.ts";
+import { createSlideFloor } from "./../game/gameObject";
 
 declare const BABYLON: any;
 interface MountBabylonProps {
@@ -163,6 +164,164 @@ function createPiston(scene: any, x: number, z: number) {
   return pistonHead;
 }
 
+function createSlideFloor(
+  scene: any,
+  x: number,
+  z: number,
+  direction: "right" | "left" | "up" | "down",
+) {
+  const slideFloor = BABYLON.MeshBuilder.CreatePlane(
+    "slideFloor",
+    { width: 1, height: 1 },
+    scene,
+  );
+  slideFloor.position = new BABYLON.Vector3(-3.5 + x, -1.9, -3.5 + z);
+  slideFloor.rotation.x = Math.PI / 2;
+
+  const slideFloorMaterial = new BABYLON.StandardMaterial(
+    "slideFloorMaterial",
+    scene,
+  );
+
+  // 矢印テクスチャを作成
+  const textureSize = 256;
+  const arrowTexture = new BABYLON.DynamicTexture(
+    "arrowTexture",
+    { width: textureSize, height: textureSize },
+    scene,
+    false,
+  );
+
+  // 矢印の向きに応じた回転角度
+  let rotation = 0;
+  switch (direction) {
+    case "right":
+      rotation = 0;
+      break;
+    case "down":
+      rotation = Math.PI / 2;
+      break;
+    case "left":
+      rotation = Math.PI;
+      break;
+    case "up":
+      rotation = -Math.PI / 2;
+      break;
+  }
+
+  // アニメーション用のオフセット
+  let animOffset = 0;
+
+  const drawArrow = () => {
+    const ctx = arrowTexture.getContext();
+    const center = textureSize / 2;
+
+    // 背景をクリア
+    ctx.fillStyle = "#e6e633";
+    ctx.fillRect(0, 0, textureSize, textureSize);
+
+    ctx.save();
+    ctx.translate(center, center);
+    ctx.rotate(rotation);
+
+    // アニメーションするオフセットを適用
+    const offsetX = Math.sin(animOffset) * 15;
+
+    // 矢印を描画（3つの矢印で流れを表現）
+    ctx.fillStyle = "#333333";
+
+    for (let i = -1; i <= 1; i++) {
+      const xPos = offsetX + i * 60;
+
+      ctx.beginPath();
+      // 矢印の形状
+      ctx.moveTo(xPos - 30, -20);
+      ctx.lineTo(xPos, -20);
+      ctx.lineTo(xPos, -40);
+      ctx.lineTo(xPos + 40, 0);
+      ctx.lineTo(xPos, 40);
+      ctx.lineTo(xPos, 20);
+      ctx.lineTo(xPos - 30, 20);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    ctx.restore();
+    arrowTexture.update();
+  };
+
+  // 初回描画
+  drawArrow();
+
+  // アニメーションを設定
+  scene.registerBeforeRender(() => {
+    animOffset += 0.08;
+    drawArrow();
+  });
+
+  slideFloorMaterial.diffuseTexture = arrowTexture;
+  slideFloorMaterial.emissiveColor = new BABYLON.Color3(0.3, 0.3, 0.1);
+  slideFloor.material = slideFloorMaterial;
+
+  return slideFloor;
+}
+
+function createBox(scene: any, x: number, z: number) {
+  const box = BABYLON.MeshBuilder.CreateBox(
+    "box",
+    { height: 0.8, width: 0.8, depth: 0.8 },
+    scene,
+  );
+  box.position = new BABYLON.Vector3(-3.5 + x, -1.75, -3.5 + z);
+
+  const boxMaterial = new BABYLON.StandardMaterial(
+    "boxMaterial",
+    scene,
+  );
+
+  // Xの模様を持つテクスチャを作成
+  const textureSize = 256;
+  const boxTexture = new BABYLON.DynamicTexture(
+    "boxTexture",
+    { width: textureSize, height: textureSize },
+    scene,
+    false,
+  );
+  const ctx = boxTexture.getContext();
+
+  // 背景色（茶色）
+  ctx.fillStyle = "#996633";
+  ctx.fillRect(0, 0, textureSize, textureSize);
+
+  // Xの模様を描画
+  ctx.strokeStyle = "#4d3319";
+  ctx.lineWidth = 20;
+  ctx.lineCap = "round";
+
+  // 左上から右下への線
+  ctx.beginPath();
+  ctx.moveTo(40, 40);
+  ctx.lineTo(textureSize - 40, textureSize - 40);
+  ctx.stroke();
+
+  // 右上から左下への線
+  ctx.beginPath();
+  ctx.moveTo(textureSize - 40, 40);
+  ctx.lineTo(40, textureSize - 40);
+  ctx.stroke();
+
+  // 枠線を追加
+  ctx.strokeStyle = "#4d3319";
+  ctx.lineWidth = 8;
+  ctx.strokeRect(10, 10, textureSize - 20, textureSize - 20);
+
+  boxTexture.update();
+
+  boxMaterial.diffuseTexture = boxTexture;
+  box.material = boxMaterial;
+  return box;
+}
+
 function createGameStateMessageUI() {
   const text = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
     "GameStateMessageUI",
@@ -285,6 +444,21 @@ export function gameViewer(
         // ピストンを設置
         const piston = createPiston(scene, obj.position.x, obj.position.z);
         objects[obj.id] = piston;
+      }
+      if (obj.type === "slideFloor") {
+        // スライド床を設置
+        const slideFloor = createSlideFloor(
+          scene,
+          obj.position.x,
+          obj.position.z,
+          obj.direction || "right",
+        );
+        objects[obj.id] = slideFloor;
+      }
+      if (obj.type === "box") {
+        // 箱を設置
+        const box = createBox(scene, obj.position.x, obj.position.z);
+        objects[obj.id] = box;
       }
     }
 

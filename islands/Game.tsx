@@ -5,10 +5,12 @@ import { useEffect, useState } from "preact/hooks";
 import { SimulateResult } from "../game/gameObject.ts";
 import * as map1 from "../game/map1.ts";
 import * as map2 from "../game/map2.ts";
+import * as map3 from "../game/map3.ts";
 
 const gameResorces = {
   map1,
   map2,
+  map3,
 };
 
 type GameMap = "map1" | "map2";
@@ -135,8 +137,9 @@ export default function Game() {
           value={gameMap}
           onChange={(e) => setGameMap(e.currentTarget.value as GameMap)}
         >
-          <option value="map1">Map 1</option>
-          <option value="map2">Map 2</option>
+          <option value="map1">Level 1</option>
+          <option value="map2">Level 2</option>
+          <option value="map3">Level 3</option>
         </select>
       </div>
 
@@ -224,6 +227,16 @@ export default function Game() {
             <MonacoEditor code={code} />
           </div>
         </div>
+      </div>
+      <div>
+        {/* 使うことができるメソッドの説明 */}
+      </div>
+      <div>
+        <footer class="footer footer-center p-4 bg-base-200 text-base-content rounded">
+          <div>
+            <p>© 2024 Deno Sandbox API Test by Octo8080X.</p>
+          </div>
+        </footer>
       </div>
     </div>
   );

@@ -1,22 +1,34 @@
 import {
   createBox,
   createGoal,
+  createPiston,
   createPlayer,
+  createSlideFloor,
   type GameObject,
   type MovePlan,
   type Operation,
   SimulateResult,
 } from "./gameObject.ts";
 
-export function map1() {
+export function map3() {
   const objects: GameObject[] = [];
-  objects.push(createGoal(5, 5));
-  objects.push(createPlayer(3, 3));
-  objects.push(createBox(3, 4));
-  objects.push(createBox(5, 3));
+  objects.push(createGoal(7, 2));
+  objects.push(createPlayer(1, 4));
+  objects.push(createSlideFloor(2, 4, "right"));
+  objects.push(createSlideFloor(3, 4, "right"));
+  objects.push(createSlideFloor(4, 4, "right"));
+  objects.push(createSlideFloor(5, 4, "right"));
+  objects.push(createSlideFloor(6, 4, "up"));
+  objects.push(createSlideFloor(6, 5, "up"));
+  objects.push(createSlideFloor(6, 6, "left"));
+  objects.push(createBox(4, 5));
+  objects.push(createPiston(3, 2, "right"));
+  objects.push(createSlideFloor(5, 2, "right"));
+  objects.push(createSlideFloor(6, 2, "right"));
+
   return {
     gameObjects: objects,
-    defaultEnergy: 5,
+    defaultEnergy: 4,
   };
 }
 
@@ -213,7 +225,7 @@ export function createTick(objects: GameObject[]) {
   };
 }
 
-const { gameObjects, defaultEnergy } = map1();
+const { gameObjects, defaultEnergy } = map3();
 const tick = createTick(gameObjects);
 
 const movePlan: MovePlan[][] = [];
@@ -290,6 +302,11 @@ function isObstacle(pos1: { x: number; z: number }, object: GameObject) {
       return true;
     }
   }
+  if (object.type === "box") {
+    if (pos1.x === object.position.x && pos1.z === object.position.z) {
+      return true;
+    }
+  }
 
   return false;
 }
@@ -351,14 +368,20 @@ export function repeat(conditionFn: () => boolean, actionFn: () => void) {
 }
 
 export function stay() {
+  movePlan.push(tick("stay"));
   energyHistory.push(energyHistory[energyHistory.length - 1]);
 }
 
 createStart();
 
 export function getSimulateResult(): SimulateResult {
+  // 座標更新されているので初期に戻す
+  const player = gameObjects.find((obj) => obj.type === "player")!;
+  player.position.x = movePlan[0].find((o) => o.id === player.id)!.move.x;
+  player.position.z = movePlan[0].find((o) => o.id === player.id)!.move.z;
+
   return {
-    objects: gameObjects,
+    objects: [...gameObjects, player],
     movePlan: movePlan,
     energyHistory: energyHistory,
   };
@@ -367,58 +390,309 @@ export function getSimulateResult(): SimulateResult {
 export const defaultCommands = [
   "// Welcome to Game",
   "moveRight();",
-  "moveUp();",
-  "moveLeft();",
-  "moveDown();",
+  "stay();",
+  "stay();",
+  "stay();",
+  "stay();",
+  "stay();",
 ];
 
 export const defaultSimulateResult = {
-  objects: [{
-    id: "goal-a2b778e2-c2e5-44ea-aa08-00cb0b3dd083",
-    type: "goal",
-    position: { x: 5, z: 5 },
-  }, {
-    id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-    type: "player",
-    position: { x: 3, z: 3 },
-  }],
-  movePlan: [
+  "objects": [
+    {
+      "id": "goal-957933a2-eef4-4968-9e9e-5d12b442e96c",
+      "type": "goal",
+      "position": {
+        "x": 7,
+        "z": 2,
+      },
+    },
+    {
+      "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+      "type": "player",
+      "position": {
+        "x": 1,
+        "z": 4,
+      },
+    },
+    {
+      "id": "slideFloor-0d522316-ad9b-4780-93f4-941b5394e96d",
+      "type": "slideFloor",
+      "position": {
+        "x": 2,
+        "z": 4,
+      },
+      "direction": "right",
+    },
+    {
+      "id": "slideFloor-3fd373e0-29ea-4b28-ba85-459ffc910c97",
+      "type": "slideFloor",
+      "position": {
+        "x": 3,
+        "z": 4,
+      },
+      "direction": "right",
+    },
+    {
+      "id": "slideFloor-10405aab-c271-4b7e-a9f2-4011c19caeb2",
+      "type": "slideFloor",
+      "position": {
+        "x": 4,
+        "z": 4,
+      },
+      "direction": "right",
+    },
+    {
+      "id": "slideFloor-611ddfc2-c557-4d58-8af4-bae04e27473f",
+      "type": "slideFloor",
+      "position": {
+        "x": 5,
+        "z": 4,
+      },
+      "direction": "right",
+    },
+    {
+      "id": "slideFloor-21689751-3bfe-42e4-95e8-456846644aaa",
+      "type": "slideFloor",
+      "position": {
+        "x": 6,
+        "z": 4,
+      },
+      "direction": "up",
+    },
+    {
+      "id": "slideFloor-ee3e4661-a2d5-48a6-938b-eb03b1b95c13",
+      "type": "slideFloor",
+      "position": {
+        "x": 6,
+        "z": 5,
+      },
+      "direction": "up",
+    },
+    {
+      "id": "slideFloor-17def1a3-9282-49f5-b302-269fbdcd80cb",
+      "type": "slideFloor",
+      "position": {
+        "x": 6,
+        "z": 6,
+      },
+      "direction": "left",
+    },
+    {
+      "id": "box-ca97753e-3694-42c1-8e9d-666224b17a1a",
+      "type": "box",
+      "position": {
+        "x": 4,
+        "z": 5,
+      },
+    },
+    {
+      "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+      "type": "piston",
+      "position": {
+        "x": 3,
+        "z": 2,
+      },
+      "direction": "right",
+      "eventNumber": 1,
+    },
+    {
+      "id": "slideFloor-f07f9097-cf26-48ae-aafe-959b6568db55",
+      "type": "slideFloor",
+      "position": {
+        "x": 5,
+        "z": 2,
+      },
+      "direction": "right",
+    },
+    {
+      "id": "slideFloor-eaa53959-27cd-4557-928e-339bc3c91835",
+      "type": "slideFloor",
+      "position": {
+        "x": 6,
+        "z": 2,
+      },
+      "direction": "right",
+    },
+    {
+      "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+      "type": "player",
+      "position": {
+        "x": 1,
+        "z": 4,
+      },
+    },
+  ],
+  "movePlan": [
     [
       {
-        action: "start",
-        id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-        move: { x: 3, z: 3 },
-        type: "player",
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 1,
+          "z": 4,
+        },
+        "action": "start",
       },
     ],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 4, z: 3 },
-      action: "move",
-    }],
-    [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 4, z: 4 },
-      action: "move",
-    }],
-    [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 3, z: 4 },
-      action: "move",
-    }],
-    [],
-    [{
-      id: "player-508b9a78-3dc0-49bf-8896-570156a0be39",
-      type: "player",
-      move: { x: 3, z: 3 },
-      action: "move",
-    }],
-    [],
+    [
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 2,
+          "z": 4,
+        },
+        "action": "move",
+      },
+    ],
+    [
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 3,
+          "z": 4,
+        },
+        "action": "move",
+      },
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 3,
+          "z": 4,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "type": "piston",
+        "action": "activate",
+        "direction": "right",
+      },
+    ],
+    [
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 4,
+          "z": 4,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "right",
+      },
+    ],
+    [
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 5,
+          "z": 4,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "right",
+      },
+    ],
+    [
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 6,
+          "z": 4,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "right",
+      },
+    ],
+    [
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 6,
+          "z": 5,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "right",
+      },
+    ],
+    [
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 6,
+          "z": 6,
+        },
+        "action": "move",
+      },
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 6,
+          "z": 6,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "type": "piston",
+        "action": "activate",
+        "direction": "right",
+      },
+    ],
+    [
+      {
+        "id": "player-69e4567a-ddd1-4e3d-9661-8597348728a1",
+        "type": "player",
+        "move": {
+          "x": 5,
+          "z": 6,
+        },
+        "action": "move",
+      },
+      {
+        "id": "piston-29681db4-68eb-47f0-ae93-e3688a8ce366",
+        "type": "piston",
+        "action": "deactivate",
+        "direction": "right",
+      },
+    ],
   ],
-  energyHistory: [5, 4, 4, 3, 3, 2, 2, 1],
+  "energyHistory": [
+    4,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+  ],
 };

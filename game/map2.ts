@@ -1,4 +1,5 @@
 import {
+  createBox,
   createGoal,
   createPiston,
   createPlayer,
@@ -14,6 +15,8 @@ export function map2() {
   objects.push(createPlayer(1, 3));
   objects.push(createPiston(3, 4, "down"));
   objects.push(createPiston(6, 4, "down"));
+  objects.push(createBox(4, 2));
+
   return {
     gameObjects: objects,
     defaultEnergy: 7,
@@ -49,7 +52,11 @@ export function createTick(objects: GameObject[]) {
       }
 
       // ゴールではない
-      for (const obj of objects.filter((obj) => obj.type !== "goal")) {
+      for (
+        const obj of objects.filter((obj) =>
+          obj.type !== "goal" && obj.type !== "slideFloor"
+        )
+      ) {
         if (obj.position.x === tmpPos.x && obj.position.z === tmpPos.z) {
           // 他のオブジェクトがいるので戻す
           return [{
@@ -114,6 +121,7 @@ export function createTick(objects: GameObject[]) {
     }
 
     const movePlans: MovePlan[] = [];
+    let isPlayerActioned = false;
 
     for (const obj of objects.filter((obj) => obj.type !== "player")) {
       if (obj.type === "goal") {
@@ -171,6 +179,36 @@ export function createTick(objects: GameObject[]) {
           });
           // プレイヤーの新しい位置がマップ外か他のオブジェクトと重なる場合、押し出し失敗
         }
+      }
+      if (obj.type === "slideFloor") {
+        if (
+          obj.position.x === player.position.x &&
+          obj.position.z === player.position.z && !isPlayerActioned
+        ) {
+          isPlayerActioned = true;
+          const slideFloor = obj;
+          const playerNewPos = { ...player.position };
+          if (slideFloor.direction === "right") {
+            playerNewPos.x += 1;
+          } else if (slideFloor.direction === "left") {
+            playerNewPos.x -= 1;
+          } else if (slideFloor.direction === "up") {
+            playerNewPos.z += 1;
+          } else if (slideFloor.direction === "down") {
+            playerNewPos.z -= 1;
+          }
+          objects.find((obj) => obj.id === player.id)!.position = playerNewPos;
+
+          movePlans.push({
+            id: player.id,
+            type: "player",
+            move: { ...playerNewPos },
+            action: "move",
+          });
+        }
+      }
+      if (obj.type === "box") {
+        // boxは動かない何もしない
       }
     }
 
@@ -251,6 +289,11 @@ function isObstacle(pos1: { x: number; z: number }, object: GameObject) {
       }
     }
     // ピストン自体も障害物である
+    if (pos1.x === object.position.x && pos1.z === object.position.z) {
+      return true;
+    }
+  }
+  if (object.type === "box") {
     if (pos1.x === object.position.x && pos1.z === object.position.z) {
       return true;
     }

@@ -6,7 +6,7 @@ type GameMap = "map1" | "map2" | "map3";
 
 function createSrcCode(userScript: string, gameMap: GameMap): string {
   return `
-  import { moveRight, moveUp, moveLeft, moveDown, stay, getSimulateResult, isObstacleRight,isObstacleUp, repeat } from "./${gameMap}.ts";
+  import { moveRight, moveUp, moveLeft, moveDown, stay, getSimulateResult, isObstacleRight, isObstacleUp, isObstacleLeft, isObstacleDown, repeat } from "./${gameMap}.ts";
 
   // User Script Start
   ${userScript}

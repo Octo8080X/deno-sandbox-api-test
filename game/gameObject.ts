@@ -2,7 +2,7 @@ export type Operation = "right" | "left" | "up" | "down" | "stay";
 
 export interface BaseGameObject {
   id: string;
-  type: "player" | "goal" | "piston";
+  type: "player" | "goal" | "piston" | "slideFloor" | "box";
   position: { x: number; z: number };
 }
 
@@ -20,7 +20,21 @@ type PistonGameObject = BaseGameObject & {
   eventNumber: number;
 };
 
-export type GameObject = PlayerGameObject | GoalGameObject | PistonGameObject;
+type SlideFloorGameObject = BaseGameObject & {
+  type: "slideFloor";
+  direction: "right" | "left" | "up" | "down";
+};
+
+type BoxGameObject = BaseGameObject & {
+  type: "box";
+};
+
+export type GameObject =
+  | PlayerGameObject
+  | GoalGameObject
+  | PistonGameObject
+  | SlideFloorGameObject
+  | BoxGameObject;
 
 export interface MovePlanBase {
   id: string;
@@ -86,5 +100,29 @@ export function createPiston(
     position: { x, z },
     direction,
     eventNumber: Math.floor(Math.random() * 4) + 1,
+  };
+}
+
+export function createSlideFloor(
+  x: number,
+  z: number,
+  direction: PistonGameObject["direction"],
+): GameObject {
+  return {
+    id: `slideFloor-${crypto.randomUUID()}`,
+    type: "slideFloor",
+    position: { x, z },
+    direction,
+  };
+}
+
+export function createBox(
+  x: number,
+  z: number,
+): GameObject {
+  return {
+    id: `box-${crypto.randomUUID()}`,
+    type: "box",
+    position: { x, z },
   };
 }
